@@ -1,4 +1,4 @@
-# tennis-game-threejs
+# PongTennis3D
 Juego de tenis en 3D implementado a partir de la librería ThreeJS. Proyecto de la asignatura de Sistemas Gráficos del Grado de Ingeniería de Informática de la UGR.
 
 Para ejecutar el proyecto:
