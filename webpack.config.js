@@ -1,27 +1,36 @@
-const webpack = require('webpack');
+const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
-    context: __dirname + "/src",
-    entry: "./js/index",
+    mode: 'development',
+    target: 'web',
+    devtool: 'source-map',
+    entry: './src/js/index.js',
     output: {
-        path: __dirname + "/dist",
-        filename: "bundle.js"
+        path: path.resolve(__dirname, 'www'),
+        filename: 'bundle.js'
     },
+    plugins: [
+        new HtmlWebpackPlugin({
+            title: 'Example',
+            filename: 'index.html'
+        })
+    ],
     module: {
         rules: [
             {
                 test: /\.js$/,
-                exclude: [/node_modules/],
+                include: [
+                    path.resolve(__dirname, 'src/js')
+                ],
                 loader: 'babel-loader',
                 query: {
-                    presets: ['es2015']
+                    compact: true,
+                    presets: [
+                        ['es2015', { modules: false }]
+                    ]
                 }
             }
         ]
-    },
-    plugins: [
-        new webpack.DefinePlugin({
-            'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
-        })
-    ]
-}
+    }
+};
