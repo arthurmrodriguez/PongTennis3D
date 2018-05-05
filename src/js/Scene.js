@@ -1,7 +1,7 @@
 import * as THREE from 'three';
+import Court from './Court';
 
 export default class Scene extends THREE.Scene {
-
 
     constructor(){
         super();
@@ -21,10 +21,11 @@ export default class Scene extends THREE.Scene {
         //TODO
 
         // Court: simple ground plane for testing the viewport
-        this.court = new THREE.Mesh(new THREE.CubeGeometry(200,1,400), new THREE.MeshPhongMaterial({color: 0xff2282}));
+        this.court = new Court();
         this.add(this.court);
 
+        this.axes = new THREE.AxesHelper(100);
+        this.add(this.axes);
     }
-
 
 }
