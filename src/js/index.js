@@ -1,12 +1,11 @@
 import * as THREE from 'three';
-import Renderer from './Renderer';
 import Scene from './Scene';
 
-// HTML container which is filled with the app content
-var container;
+// Main variables
+var container, scene, renderer, views;
 
-// array of the different views we're having (two players)
-var views = [
+// Array of different views we're having (two players)
+views = [
     {
         left: 0,
         top: 0,
@@ -27,21 +26,29 @@ var views = [
     }
 ];
 
-// it defines a unique scene with a court. It will be seen from two positions
-var scene;
 
-//
-var renderer;
+init();
+animate();
 
-function computeKey(event){
-    // to be filled with the keyboard commands to play
+/**
+ * Method to create scene renderer
+ * @returns {WebGLRenderer}
+ */
+function createRenderer(){
+    var renderer = new THREE.WebGLRenderer({ antialias: false, alpha: true });
+    renderer.setClearColor(new THREE.Color(0x000000), 0); // Background color
+    renderer.setSize( window.innerWidth, window.innerHeight);
+    renderer.shadowMap.enabled = true;
+    document.body.appendChild( renderer.domElement );
+    return renderer;
 }
 
 function init(){
-    // getting the HTML container in which we will draw everything
+
+    // Getting the HTML container in which we will draw everything
     container = document.getElementById('container');
-    
-    // a view, a camera
+
+    // Every single view will have a camera attached
     for(var i=0; i<views.length; i++){
         var view = views[i];
         var camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 1, 5000);
@@ -49,14 +56,43 @@ function init(){
         view.camera = camera;
     }
 
-    // the scene with the court, players & stuff
-    scene = new Scene(renderer.getDomElement());
+    // The scene with the court, players & stuff
+    scene = new Scene();
 
-    // the renderer
-    renderer = new Renderer(window.innerWidth, window.innerHeight);
+    // The renderer
+    renderer = createRenderer();
     container.appendChild(renderer.getDomElement());
 }
 
-function render(){
-    // to be filled with a request animation, and with one scene with two cameras
+function animate(){
+    render();
+    requestAnimationFrame(animate);
 }
+
+
+function render(){
+
+
+    for ( var ii = 0; ii < views.length; ++ii ) {
+
+        var view = views[ii];
+        var camera = view.camera;
+        renderer.setViewport( left, top, width, height );
+        renderer.setScissor( left, top, width, height );
+        renderer.setScissorTest( true );
+        renderer.setClearColor( view.background );
+        camera.aspect = width / height;
+        camera.updateProjectionMatrix();
+        renderer.render( scene, camera );
+    }
+
+
+}
+
+
+
+
+
+
+
+
