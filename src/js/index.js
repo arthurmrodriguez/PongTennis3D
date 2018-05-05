@@ -74,4 +74,6 @@ function render() {
 
     playerOneControls.update();
     playerTwoControls.update();
+
+    console.log("ARTHUR");
 }
