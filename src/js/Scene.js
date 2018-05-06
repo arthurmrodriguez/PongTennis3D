@@ -1,8 +1,12 @@
 import * as THREE from 'three';
 import Court from './Court';
+import Ball from './Ball';
 
 export default class Scene extends THREE.Scene {
 
+    /**
+     * 
+     */
     constructor(){
         super();
         // Main game elements
@@ -20,12 +24,23 @@ export default class Scene extends THREE.Scene {
         // Spotlights
         //TODO
 
-        // Court: simple ground plane for testing the viewport
+        // Court: simple ground plane
         this.court = new Court();
         this.add(this.court);
 
-        this.axes = new THREE.AxesHelper(100);
+        // Ball
+        this.ball = new Ball();
+        this.add(this.ball.mesh);
+
+        // Helper axes to test viewports
+        this.axes = new THREE.AxesHelper(2000);
         this.add(this.axes);
     }
 
+    /**
+     * 
+     */
+    updatePhysics(){
+        this.ball.updatePhysics();
+    }
 }

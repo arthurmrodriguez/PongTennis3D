@@ -72,6 +72,8 @@ function initCannon(){
     world.gravity.set(0, -4, 0);
     world.broadphase = new CANNON.NaiveBroadphase();
     world.solver.iterations = 5;
+
+    world.addBody(scene.ball.body);
 }
 
 /**
@@ -94,10 +96,7 @@ function animate(){
 function updatePhysics(){
     // Step the physics world
     world.step(timeStep);
-
-    // Copy coordinates from Cannon.js world to Three.js'
-    //mesh.position.copy(body.position);
-    //mesh.quaternion.copy(body.quaternion);
+    scene.updatePhysics();
 }
 
 /**
