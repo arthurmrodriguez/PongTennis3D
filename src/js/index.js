@@ -6,16 +6,12 @@ import Scene from './Scene';
 // Main variables
 var scene, renderer, world;
 
-// Time of step in CANNON's world. Equal to a maximum of 60 FPS
-var timeStep = 1/60;
-
 // Two players, two cameras. Trackball Controls to walk around the scene
 var playerOneCamera, playerOneControls;
 var playerTwoCamera, playerTwoControls;
 
 // Methods to run on load
-initThree();
-initCannon();
+init();
 animate();
 
 /**
@@ -52,7 +48,7 @@ function createCameras(){
 /**
  * Function which initialises the THREE parameters
  */
-function initThree(){
+function init(){
     // The scene with the court, players & stuff
     scene = new Scene();
 
@@ -61,19 +57,6 @@ function initThree(){
 
     // The renderer
     createRenderer();
-}
-
-/**
- * Function which initialises the CANNON world and its parameters
- */
-function initCannon(){
-    // The cannon world. It handles physics
-    world = new CANNON.World();
-    world.gravity.set(0, -4, 0);
-    world.broadphase = new CANNON.NaiveBroadphase();
-    world.solver.iterations = 5;
-
-    world.addBody(scene.ball.body);
 }
 
 /**
@@ -94,8 +77,6 @@ function animate(){
  * 
  */
 function updatePhysics(){
-    // Step the physics world
-    world.step(timeStep);
     scene.updatePhysics();
 }
 
