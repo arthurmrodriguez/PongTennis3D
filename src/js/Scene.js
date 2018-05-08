@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import * as CANNON from 'cannon';
 import Court from './Court';
 import Ball from './Ball';
+import Light from './Light';
 
 export default class Scene extends THREE.Scene {
 
@@ -26,11 +27,12 @@ export default class Scene extends THREE.Scene {
         this.initCannon();
 
         // Ambient light
-        this.ambientLight = new THREE.AmbientLight(0xffffff,0.85);
+        this.ambientLight = new THREE.AmbientLight(0xffffff,0.65);
         this.add(this.ambientLight);
 
         // Spotlights
-        //TODO
+        this.spotLight1 = new Light({position: new THREE.Vector3(200,200,200)});
+        this.add(this.spotLight1);
 
         // Court: simple ground plane
         this.court = new Court();
@@ -51,7 +53,7 @@ export default class Scene extends THREE.Scene {
             this.ball.contactMaterial,
             {
                 friction: 0.0,
-                restitution: 0.9
+                restitution: 1.0
             }
         );
         this.world.addContactMaterial(this.ballGroundMaterial);

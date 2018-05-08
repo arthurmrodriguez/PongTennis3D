@@ -15,6 +15,8 @@ export default class Court extends THREE.Object3D {
         this.geometry = new THREE.CubeGeometry(this.width, this.heigth, this.depth);
         this.material = new THREE.MeshPhongMaterial({ color: 0x6dc066 });
         this.mesh = new THREE.Mesh(this.geometry, this.material);
+        this.mesh.applyMatrix(new THREE.Matrix4().makeTranslation(0,this.heigth/2,0));
+        this.mesh.receiveShadow = true;
         this.add(this.mesh);
 
         // 1.1 - THREE object.net

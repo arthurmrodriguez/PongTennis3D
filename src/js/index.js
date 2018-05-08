@@ -1,10 +1,9 @@
 import * as THREE from 'three';
-import * as CANNON from 'cannon';
 import * as TrackballControls from 'three-trackballcontrols';
 import Scene from './Scene';
 
 // Main variables
-var scene, renderer, world;
+var scene, renderer;
 
 // Two players, two cameras. Trackball Controls to walk around the scene
 var playerOneCamera, playerOneControls;
