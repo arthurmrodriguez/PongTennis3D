@@ -27,13 +27,14 @@ export default class Racket extends THREE.Object3D {
         // this.mesh.add(this.net);
 
         // 2 - CANNON object
-        this.courtShape = new CANNON.Box(new CANNON.Vec3(this.width/2, this.heigth/2, this.depth/2));
+        this.racketShape = new CANNON.Box(new CANNON.Vec3(this.width/2, this.heigth/2, this.depth/2));
         this.contactMaterial = new CANNON.Material();
         this.body = new CANNON.Body({
             mass: 0,
             material: this.contactMaterial
         });
-        this.body.addShape(this.courtShape);
+        this.body.addShape(this.racketShape);
+        Config.bodyIDs.racketP1ID = this.body.id;
     }
 
     /**

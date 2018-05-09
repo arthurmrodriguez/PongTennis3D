@@ -26,13 +26,15 @@ export default class Court extends THREE.Object3D {
         this.add(this.mesh);
 
         // 2 - CANNON object
-        this.courtShape = new CANNON.Box(new CANNON.Vec3(this.width/2, this.heigth/2, this.depth/2));
+        this.racketShape = new CANNON.Box(new CANNON.Vec3(this.width/2, this.heigth/2, this.depth/2));
         this.contactMaterial = new CANNON.Material();
         this.body = new CANNON.Body({ 
             mass: this.mass,
             material: this.contactMaterial
         });
-        this.body.addShape(this.courtShape);
+        this.body.addShape(this.racketShape);
+
+        Config.bodyIDs.courtID = this.body.id;
 
         this.net = new Net();
         this.net.body.position.y += this.net.heigth/2;

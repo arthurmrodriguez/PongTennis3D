@@ -42,5 +42,13 @@ export default {
     "playerTwokeys" : {
         "left" : "ArrowLeft",
         "right" : "ArrowRight"
+    },
+
+    "bodyIDs" : {
+
+        "courtID": 0,
+        "netID": 0,
+        "ballID" : 0,
+        "racketP1ID" : 0
     }
 }

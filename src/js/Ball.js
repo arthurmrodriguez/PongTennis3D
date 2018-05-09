@@ -24,12 +24,32 @@ export default class Ball extends THREE.Object3D {
         // 2- CANNON object
         this.sphereShape = new CANNON.Sphere(this.radius);
         this.contactMaterial = new CANNON.Material();
-        this.body = new CANNON.Body({ 
+        this.body = new CANNON.Body({
             mass: this.mass, 
             material: this.contactMaterial 
         });
         this.body.addShape(this.sphereShape);
         this.body.position.set(0,50,-5);
+        Config.bodyIDs.ballID = this.body.id;
+
+        // Listener event to detect collisions with other objects.
+        // Proper function will be triggered with each collision
+        // Body.id could be used for classification.
+        this.body.addEventListener("collide",function(collision){
+            switch (collision.body.id){
+                case Config.bodyIDs.courtID:
+                    console.log("Colisiona con Court");
+                    break;
+                case Config.bodyIDs.netID:
+                    console.log("Colisiona con Net");
+                    break;
+                case Config.bodyIDs.racketP1ID:
+                    console.log("Colisiona con Racket");
+                    break;
+                default:
+                    break;
+            }
+        });
     }
 
     updateMeshPosition(){

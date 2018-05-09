@@ -30,6 +30,8 @@ export default class Net extends THREE.Object3D {
             material: this.contactMaterial
         });
         this.body.addShape(this.netShape);
+
+        Config.bodyIDs.netID = this.body.id;
     }
 
     updateMeshPosition() {
