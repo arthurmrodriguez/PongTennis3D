@@ -16,7 +16,7 @@ export default class Racket extends THREE.Object3D {
 
         // 1 - THREE object
         this.geometry = new THREE.CubeGeometry(this.width, this.heigth, this.depth);
-        this.material = new THREE.MeshPhongMaterial({ color: 0x6dc0cc });
+        this.material = new THREE.MeshPhongMaterial({ color: this.color });
         this.mesh = new THREE.Mesh(this.geometry, this.material);
         this.mesh.receiveShadow = true;
         this.add(this.mesh);
@@ -36,7 +36,10 @@ export default class Racket extends THREE.Object3D {
         this.body.addShape(this.courtShape);
     }
 
-    updatePhysics(){
+    /**
+     * It copies the body's position into the THREE mesh
+     */
+    updateMeshPosition(){
         // Copy coordinates from Cannon.js world to Three.js'
         this.mesh.position.copy(this.body.position);
         this.mesh.quaternion.copy(this.body.quaternion);
@@ -44,22 +47,22 @@ export default class Racket extends THREE.Object3D {
 
     /**
      * Talking about movement, we have to change the CANNON parameters, not the THREE's ones.
-     * The updatePhysics method will handle the update of the THREE mesh.
+     * The updateMeshPosition method will handle the update of the THREE mesh.
      * @param {keycode} event 
      */
     computeKey(event){
         switch(event.code){
             case 'ArrowUp':
-                this.body.position.z += 1;
+                this.body.position.z += 3;
                 break;
             case 'ArrowDown':
-                this.body.position.z -= 1;
+                this.body.position.z -= 3;
                 break;
             case 'ArrowLeft':
-                this.body.position.x += 1;
+                this.body.position.x += 3;
                 break;
             case 'ArrowRight':
-                this.body.position.x -= 1;
+                this.body.position.x -= 3;
                 break;
         }
     }

@@ -1,48 +1,40 @@
 import * as THREE from 'three';
 import * as CANNON from 'cannon';
 import Config from './Config';
-import Net from './Net';
 
-export default class Court extends THREE.Object3D {
+export default class Net extends THREE.Object3D {
 
-    constructor(){
+    constructor() {
         super();
-
-        // Objects
-        this.net = null;
 
         // Parameters
         this.width = Config.court.width;
-        this.heigth = Config.court.heigth;
-        this.depth = Config.court.depth;
-        this.color = Config.court.color;
-        this.mass = Config.court.mass;
+        this.heigth = Config.net.heigth;
+        this.depth = Config.net.depth;
+        this.color = Config.net.color;
+        this.mass = Config.net.mass;
 
         // 1 - THREE object
         this.geometry = new THREE.CubeGeometry(this.width, this.heigth, this.depth);
         this.material = new THREE.MeshPhongMaterial({ color: this.color });
         this.mesh = new THREE.Mesh(this.geometry, this.material);
         this.mesh.receiveShadow = true;
+        this.mesh.castShadow = true;
         this.add(this.mesh);
 
         // 2 - CANNON object
-        this.courtShape = new CANNON.Box(new CANNON.Vec3(this.width/2, this.heigth/2, this.depth/2));
+        this.netShape = new CANNON.Box(new CANNON.Vec3(this.width/2, this.heigth/2, this.depth/2));
         this.contactMaterial = new CANNON.Material();
-        this.body = new CANNON.Body({ 
+        this.body = new CANNON.Body({
             mass: this.mass,
             material: this.contactMaterial
         });
-        this.body.addShape(this.courtShape);
-
-        this.net = new Net();
-        this.net.body.position.y += this.net.heigth/2;
-        this.add(this.net);
+        this.body.addShape(this.netShape);
     }
 
-    updateMeshPosition(){
+    updateMeshPosition() {
         // Copy coordinates from Cannon.js world to Three.js'
         this.mesh.position.copy(this.body.position);
         this.mesh.quaternion.copy(this.body.quaternion);
-        this.net.updateMeshPosition();
     }
 }

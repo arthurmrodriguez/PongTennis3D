@@ -79,7 +79,7 @@ function animate(){
     requestAnimationFrame(animate);
 
     // Update physics world, stepping CANNON world and waiting for collisions
-    updatePhysics();
+    updateMeshPosition();
 
     // Infinite loop
     render();
@@ -88,8 +88,8 @@ function animate(){
 /**
  * 
  */
-function updatePhysics(){
-    scene.updatePhysics();
+function updateMeshPosition(){
+    scene.updateMeshPosition();
 }
 
 /**

@@ -46,6 +46,7 @@ export default class Scene extends THREE.Scene {
         this.court = new Court();
         this.add(this.court);
         this.world.addBody(this.court.body);
+        this.world.addBody(this.court.net.body);
 
         // Ball
         this.ball = new Ball();
@@ -98,12 +99,12 @@ export default class Scene extends THREE.Scene {
     /**
      * 
      */
-    updatePhysics() {
+    updateMeshPosition() {
         // Step the physics world
         this.world.step(this.timeStep);
-        this.court.updatePhysics();
-        this.ball.updatePhysics();
-        this.racket1.updatePhysics();
+        this.court.updateMeshPosition();
+        this.ball.updateMeshPosition();
+        this.racket1.updateMeshPosition();
     }
 
     /**

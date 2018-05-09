@@ -10,10 +10,11 @@ export default class Ball extends THREE.Object3D {
         // Parameters
         this.mass = Config.ball.mass;
         this.radius = Config.ball.radius;
+        this.numSegments = Config.ball.numSegments;
         this.color = Config.ball.color;
 
         // 1 - THREE object
-        this.geometry = new THREE.SphereGeometry(this.radius);
+        this.geometry = new THREE.SphereGeometry(this.radius, this.numSegments, this.numSegments);
         this.material = new THREE.MeshBasicMaterial({ color: this.color });
         this.mesh = new THREE.Mesh(this.geometry, this.material);
         this.mesh.castShadow = true;
@@ -28,12 +29,18 @@ export default class Ball extends THREE.Object3D {
             material: this.contactMaterial 
         });
         this.body.addShape(this.sphereShape);
-        this.body.position.set(0,50,0);
+        this.body.position.set(0,50,-5);
     }
 
-    updatePhysics(){
+    updateMeshPosition(){
         // Copy coordinates from Cannon.js world to Three.js'
         this.mesh.position.copy(this.body.position);
         this.mesh.quaternion.copy(this.body.quaternion);
+
+        // temporal para pruebas
+        if(this.body.position.y <= -50){
+            this.body.position = new CANNON.Vec3(0, 50, 0);
+            this.body.velocity.set(0, 0, 0);
+        }
     }
 }

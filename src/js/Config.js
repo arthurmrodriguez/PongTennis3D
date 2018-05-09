@@ -13,10 +13,17 @@ export default {
         "color" : 0x6dc066,
         "mass" : 0
     },
+    "net" : {
+        "heigth" : 25,
+        "depth" : 1,
+        "color" : 0xffffff,
+        "mass" : 0
+    },
     "ball" : {
         "radius" : 4,
         "color" : 0xffff00,
-        "mass" : 5
+        "mass" : 5,
+        "numSegments" : 32
     },
     "scenario" : {
         "ambientLight" : {
@@ -25,7 +32,7 @@ export default {
         },
         "physics" : {
             "bounceRestitution" : 1.0,
-            "gravity" : -9.82
+            "gravity" : -100
         }
     },
     "playerOnekeys" : {
