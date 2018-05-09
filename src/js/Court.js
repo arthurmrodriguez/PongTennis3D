@@ -1,21 +1,23 @@
 import * as THREE from 'three';
 import * as CANNON from 'cannon';
+import Config from './Config';
 
 export default class Court extends THREE.Object3D {
 
     constructor(){
         super();
 
-        // Mathematical description
-        this.width = 200;
-        this.heigth = 1;
-        this.depth = 400;
+        // Parameters
+        this.width = Config.court.width;
+        this.heigth = Config.court.heigth;
+        this.depth = Config.court.depth;
+        this.color = Config.court.color;
+        this.mass = Config.court.mass;
 
         // 1 - THREE object
         this.geometry = new THREE.CubeGeometry(this.width, this.heigth, this.depth);
-        this.material = new THREE.MeshPhongMaterial({ color: 0x6dc066 });
+        this.material = new THREE.MeshPhongMaterial({ color: this.color });
         this.mesh = new THREE.Mesh(this.geometry, this.material);
-        this.mesh.applyMatrix(new THREE.Matrix4().makeTranslation(0,this.heigth/2,0));
         this.mesh.receiveShadow = true;
         this.add(this.mesh);
 
@@ -28,7 +30,7 @@ export default class Court extends THREE.Object3D {
         this.courtShape = new CANNON.Box(new CANNON.Vec3(this.width, this.heigth, this.depth));
         this.contactMaterial = new CANNON.Material();
         this.body = new CANNON.Body({ 
-            mass: 0,
+            mass: this.mass,
             material: this.contactMaterial
         });
         this.body.addShape(this.courtShape);

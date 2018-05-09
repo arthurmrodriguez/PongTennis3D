@@ -1,18 +1,20 @@
 import * as CANNON from 'cannon';
 import * as THREE from 'three';
+import Config from './Config';
 
 export default class Ball extends THREE.Object3D {
     
     constructor(){
         super();
 
-        // Mathematical description
-        this.mass = 5;
-        this.radius = 3;
+        // Parameters
+        this.mass = Config.ball.mass;
+        this.radius = Config.ball.radius;
+        this.color = Config.ball.color;
 
         // 1 - THREE object
         this.geometry = new THREE.SphereGeometry(this.radius);
-        this.material = new THREE.MeshBasicMaterial({ color: 0xffff00 });
+        this.material = new THREE.MeshBasicMaterial({ color: this.color });
         this.mesh = new THREE.Mesh(this.geometry, this.material);
         this.mesh.castShadow = true;
         this.mesh.receiveShadow = true;
