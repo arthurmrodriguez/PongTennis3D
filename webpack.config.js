@@ -12,7 +12,7 @@ module.exports = {
     },
     plugins: [
         new HtmlWebpackPlugin({
-            title: 'Example',
+            title: 'PongTennis3D',
             filename: 'index.html'
         })
     ],
