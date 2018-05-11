@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import * as CANNON from 'cannon';
 import Config from './Config';
 import Net from './Net';
+import tennisCourt from '../img/tennistexture.png';
 
 export default class Court extends THREE.Object3D {
 

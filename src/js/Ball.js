@@ -16,7 +16,7 @@ export default class Ball extends THREE.Object3D {
 
         // 1 - THREE object
         this.geometry = new THREE.SphereGeometry(this.radius, this.numSegments, this.numSegments);
-        this.material = new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load(ballTexture) });
+        this.material = new THREE.MeshPhongMaterial({ map: new THREE.TextureLoader().load(ballTexture) });
         this.mesh = new THREE.Mesh(this.geometry, this.material);
         this.mesh.castShadow = true;
         this.mesh.receiveShadow = true;

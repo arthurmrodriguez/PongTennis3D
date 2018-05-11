@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import * as CANNON from 'cannon';
 import Config from './Config';
+import tennisNet from '../img/nettexture.png';
 
 export default class Net extends THREE.Object3D {
 
