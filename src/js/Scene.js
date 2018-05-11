@@ -53,10 +53,18 @@ export default class Scene extends THREE.Scene {
         this.add(this.ball);
         this.world.addBody(this.ball.body);
 
-        // Trial racket
+        // Trial rackets
         this.racket1 = new Racket();
+        this.racket1.setPosition(0, this.racket1.height, -Config.court.depth/2);
+        this.racket1.setControls(Config.playerOnekeys);
         this.add(this.racket1);
         this.world.addBody(this.racket1.body);
+
+        this.racket2 = new Racket();
+        this.racket2.setPosition(0, this.racket2.height, Config.court.depth/2);
+        this.racket2.setControls(Config.playerTwokeys);
+        this.add(this.racket2);
+        this.world.addBody(this.racket2.body);
 
         // Helper axes to test viewports
         this.axes = new THREE.AxesHelper(2000);
@@ -105,6 +113,7 @@ export default class Scene extends THREE.Scene {
         this.court.updateMeshPosition();
         this.ball.updateMeshPosition();
         this.racket1.updateMeshPosition();
+        this.racket2.updateMeshPosition();
     }
 
     /**
@@ -112,5 +121,6 @@ export default class Scene extends THREE.Scene {
      */
     computeKey(event) {
         this.racket1.computeKey(event);
+        this.racket2.computeKey(event);
     }
 }
