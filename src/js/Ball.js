@@ -52,6 +52,19 @@ export default class Ball extends THREE.Object3D {
         });
     }
 
+    /**
+     * Receives a point in which the object is positioned.
+     * It handles the body, so that the own body positions the mesh.
+     * @param {int} x 
+     * @param {int} y 
+     * @param {int} z 
+     */
+    setPosition(x = 0, y = 0, z = 0) {
+        this.body.position.x = x;
+        this.body.position.y = y;
+        this.body.position.z = z;
+    }
+
     updateMeshPosition(){
         // Copy coordinates from Cannon.js world to Three.js'
         this.mesh.position.copy(this.body.position);
