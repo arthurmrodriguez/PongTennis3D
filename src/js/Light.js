@@ -2,10 +2,10 @@ import * as THREE from 'three';
 
 export default class SpotLight extends THREE.Light{
 
-    constructor(color = 0xffffff, intensity = 0.9, position){
+    constructor(color = 0xffffff, intensity = 0.7, position){
         super();
         this.light = new THREE.SpotLight(color);
-        position = (position === undefined ? new THREE.Vector3(100,200,200) : position);
+        position = (position === undefined ? new THREE.Vector3(0,200,0) : position);
         this.light.position.set(position.x,position.y, position.z);
         this.light.castShadow = true;
         this.light.shadow.mapSize.width = 4096;
@@ -17,12 +17,16 @@ export default class SpotLight extends THREE.Light{
         this.add(this.light);
     }
 
-
+    /**
+     * 
+     * @param {*} target 
+     * @param {*} angle 
+     * @param {*} distance 
+     */
     setParameters(target, angle, distance){
         this.light.add(target);
         this.light.target = target;
         this.light.angle = angle;
         this.light.distance = distance
     }
-
 }

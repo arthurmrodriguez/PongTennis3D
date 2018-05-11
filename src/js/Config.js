@@ -4,7 +4,8 @@ export default {
         "height" : 20,
         "depth" : 20,
         "color" : 0x6dc0cc,
-        "mass" : 0
+        "mass" : 0,
+        "stepSize" : 1
     },
     "court" : {
         "width" : 200,
@@ -39,13 +40,15 @@ export default {
         "up" : "KeyW",
         "down" : "KeyS",
         "left" : "KeyA",
-        "right" : "KeyD"
+        "right" : "KeyD",
+        "strike" : "Space"
     },
     "playerTwokeys" : {
-        "up" : "ArrowUp",
-        "down" : "ArrowDown",
-        "left" : "ArrowLeft",
-        "right" : "ArrowRight"
+        "up" : "ArrowDown",
+        "down" : "ArrowUp",
+        "left" : "ArrowRight",
+        "right" : "ArrowLeft",
+        "strike" : "Enter"
     },
     "bodyIDs" : {
         "courtID": 0,

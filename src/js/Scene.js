@@ -39,8 +39,8 @@ export default class Scene extends THREE.Scene {
         this.add(this.ambientLight);
 
         // Spotlights
-        this.spotLight1 = new SpotLight({position: new THREE.Vector3(200,200,200)});
-        this.add(this.spotLight1);
+        this.cenitalSpotLight = new SpotLight();
+        this.add(this.cenitalSpotLight);
 
         // Court: simple ground plane
         this.court = new Court();
@@ -66,10 +66,6 @@ export default class Scene extends THREE.Scene {
         this.add(this.racket2);
         this.world.addBody(this.racket2.body);
 
-        // Helper axes to test viewports
-        this.axes = new THREE.AxesHelper(2000);
-        this.add(this.axes);
-
         // Collisions work correctly without contact materials, but there aren't any bounces.
         // Contact material between the ball and the ground
         this.ballGroundMaterial = new CANNON.ContactMaterial(
@@ -83,7 +79,7 @@ export default class Scene extends THREE.Scene {
         this.world.addContactMaterial(this.ballGroundMaterial);
 
         // Contact material between the ball and a racket
-        this.ballRacketMaterial = new CANNON.ContactMaterial(
+        this.ballRacket1Material = new CANNON.ContactMaterial(
             this.ball.contactMaterial,
             this.racket1.contactMaterial,
             {
@@ -91,7 +87,17 @@ export default class Scene extends THREE.Scene {
                 restitution: this.restitution
             }
         );
-        this.world.addContactMaterial(this.ballRacketMaterial);
+        this.world.addContactMaterial(this.ballRacket1Material);
+
+        this.ballRacket2Material = new CANNON.ContactMaterial(
+            this.ball.contactMaterial,
+            this.racket2.contactMaterial,
+            {
+                friction: 0.0,
+                restitution: this.restitution
+            }
+        );
+        this.world.addContactMaterial(this.ballRacket2Material);
     }
 
     /**
@@ -119,8 +125,16 @@ export default class Scene extends THREE.Scene {
     /**
      * 
      */
-    computeKey(event) {
-        this.racket1.computeKey(event);
-        this.racket2.computeKey(event);
+    computeKeyDown(event){
+        this.racket1.computeKeyDown(event);
+        this.racket2.computeKeyDown(event);
+    }
+
+    /**
+     * 
+     */
+    computeKeyUp(event){
+        this.racket1.computeKeyUp(event);
+        this.racket2.computeKeyUp(event);
     }
 }

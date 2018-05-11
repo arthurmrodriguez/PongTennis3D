@@ -13,7 +13,14 @@ export default class Racket extends THREE.Object3D {
         this.depth = Config.racket.depth;
         this.color = Config.racket.color;
         this.mass = Config.racket.mass;
+        this.stepSize = Config.racket.stepSize;
         this.controls = null;
+
+        // Animation/movement parameters
+        this.movingBackwards = false;
+        this.movingForward = false;
+        this.movingLeft = false;
+        this.movingRight = false;
 
         // 1 - THREE object
         this.geometry = new THREE.CubeGeometry(this.width, this.height, this.depth);
@@ -21,11 +28,6 @@ export default class Racket extends THREE.Object3D {
         this.mesh = new THREE.Mesh(this.geometry, this.material);
         this.mesh.receiveShadow = true;
         this.add(this.mesh);
-
-        // 1.1 - THREE object.net
-        // this.net = new THREE.Mesh(new THREE.CubeGeometry(this.width, 25, 1), new THREE.MeshPhongMaterial({ color: 0xFFFFFF }));
-        // this.net.applyMatrix(new THREE.Matrix4().makeTranslation(0, 12.5, 0));
-        // this.mesh.add(this.net);
 
         // 2 - CANNON object
         this.racketShape = new CANNON.Box(new CANNON.Vec3(this.width/2, this.height/2, this.depth/2));
@@ -70,6 +72,15 @@ export default class Racket extends THREE.Object3D {
         // Copy coordinates from Cannon.js world to Three.js'
         this.mesh.position.copy(this.body.position);
         this.mesh.quaternion.copy(this.body.quaternion);
+
+        if(this.movingForward)
+            this.body.position.z += this.stepSize;
+        if(this.movingBackwards)
+            this.body.position.z -= this.stepSize;
+        if(this.movingLeft)
+            this.body.position.x += this.stepSize;
+        if(this.movingRight)
+            this.body.position.x -= this.stepSize;
     }
 
     /**
@@ -77,19 +88,41 @@ export default class Racket extends THREE.Object3D {
      * The updateMeshPosition method will handle the update of the THREE mesh.
      * @param {keycode} event 
      */
-    computeKey(event){
+    computeKeyDown(event){
         switch(event.code){
             case this.controls.up:
-                this.body.position.z += 3;
+                this.movingForward = true;
                 break;
             case this.controls.down:
-                this.body.position.z -= 3;
+                this.movingBackwards = true;
                 break;
             case this.controls.left:
-                this.body.position.x += 3;
+                this.movingLeft = true;
                 break;
             case this.controls.right:
-                this.body.position.x -= 3;
+                this.movingRight = true;
+                break;
+        }
+    }
+
+    /**
+     * Talking about movement, we have to change the CANNON parameters, not the THREE's ones.
+     * The updateMeshPosition method will handle the update of the THREE mesh.
+     * @param {keycode} event 
+     */
+    computeKeyUp(event){
+        switch (event.code) {
+            case this.controls.up:
+                this.movingForward = false;
+                break;
+            case this.controls.down:
+                this.movingBackwards = false;
+                break;
+            case this.controls.left:
+                this.movingLeft = false;
+                break;
+            case this.controls.right:
+                this.movingRight = false;
                 break;
         }
     }

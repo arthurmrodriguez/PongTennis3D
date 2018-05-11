@@ -128,12 +128,19 @@ function render() {
 /**
  * 
  */
-function computeKey(event) {
-    scene.computeKey(event);
+function computeKeyDown(event) {
+    scene.computeKeyDown(event);
+}
+
+/**
+ * 
+ */
+function computeKeyUp(event) {
+    scene.computeKeyUp(event);
 }
 
 // When ready, load these things
 $(function() {
-    var idListener = window.addEventListener('keydown', computeKey);
-    scene.idListener = idListener;
+    window.addEventListener('keydown', computeKeyDown, false);
+    window.addEventListener('keyup', computeKeyUp, false);
 })

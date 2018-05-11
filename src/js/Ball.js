@@ -1,6 +1,7 @@
 import * as CANNON from 'cannon';
 import * as THREE from 'three';
 import Config from './Config';
+import ballTexture from '../img/tennistexture.png';
 
 export default class Ball extends THREE.Object3D {
     
@@ -15,7 +16,7 @@ export default class Ball extends THREE.Object3D {
 
         // 1 - THREE object
         this.geometry = new THREE.SphereGeometry(this.radius, this.numSegments, this.numSegments);
-        this.material = new THREE.MeshBasicMaterial({ color: this.color });
+        this.material = new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load(ballTexture) });
         this.mesh = new THREE.Mesh(this.geometry, this.material);
         this.mesh.castShadow = true;
         this.mesh.receiveShadow = true;
@@ -29,7 +30,7 @@ export default class Ball extends THREE.Object3D {
             material: this.contactMaterial 
         });
         this.body.addShape(this.sphereShape);
-        this.body.position.set(0,50,-5);
+        this.body.position.set(0,50,-15);
         Config.bodyIDs.ballID = this.body.id;
 
         // Listener event to detect collisions with other objects.
@@ -38,13 +39,13 @@ export default class Ball extends THREE.Object3D {
         this.body.addEventListener("collide",function(collision){
             switch (collision.body.id){
                 case Config.bodyIDs.courtID:
-                    console.log("Colisiona con Court");
+                    // console.log("Colisiona con Court");
                     break;
                 case Config.bodyIDs.netID:
-                    console.log("Colisiona con Net");
+                    // console.log("Colisiona con Net");
                     break;
                 case Config.bodyIDs.racketP1ID:
-                    console.log("Colisiona con Racket");
+                    // console.log("Colisiona con Racket");
                     break;
                 default:
                     break;
