@@ -9,13 +9,13 @@ export default class Net extends THREE.Object3D {
 
         // Parameters
         this.width = Config.court.width;
-        this.heigth = Config.net.heigth;
+        this.height = Config.net.height;
         this.depth = Config.net.depth;
         this.color = Config.net.color;
         this.mass = Config.net.mass;
 
         // 1 - THREE object
-        this.geometry = new THREE.CubeGeometry(this.width, this.heigth, this.depth);
+        this.geometry = new THREE.CubeGeometry(this.width, this.height, this.depth);
         this.material = new THREE.MeshPhongMaterial({ color: this.color });
         this.mesh = new THREE.Mesh(this.geometry, this.material);
         this.mesh.receiveShadow = true;
@@ -23,7 +23,7 @@ export default class Net extends THREE.Object3D {
         this.add(this.mesh);
 
         // 2 - CANNON object
-        this.netShape = new CANNON.Box(new CANNON.Vec3(this.width/2, this.heigth/2, this.depth/2));
+        this.netShape = new CANNON.Box(new CANNON.Vec3(this.width/2, this.height/2, this.depth/2));
         this.contactMaterial = new CANNON.Material();
         this.body = new CANNON.Body({
             mass: this.mass,
