@@ -1,10 +1,12 @@
 # PongTennis3D
-Juego de tenis en 3D implementado a partir de la librería ThreeJS. Proyecto de la asignatura de Sistemas Gráficos del Grado de Ingeniería de Informática de la UGR.
 
-Para ejecutar el proyecto:
+3D Tennis game. Implementation based on ThreeJS and CannonJS. 
+
+## How to run the project?
+
 ```bash
 $ git clone __REPO__
 $ cd __REPO__
 $ npm install
-$ npm run {dev,build} 	# para desarrollo o producción
+$ npm start 	# deploys the project
 ```
