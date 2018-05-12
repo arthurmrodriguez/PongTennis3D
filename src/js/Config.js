@@ -16,7 +16,7 @@ export default {
     },
     "net" : {
         "height" : 25,
-        "depth" : 1,
+        "depth" : 0.5,
         "color" : 0xffffff,
         "mass" : 0
     },

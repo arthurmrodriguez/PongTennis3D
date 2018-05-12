@@ -1,7 +1,7 @@
 import * as CANNON from 'cannon';
 import * as THREE from 'three';
 import Config from './Config';
-import ballTexture from '../img/tennistexture.png';
+import ballTexture from '../img/tennisBall.png';
 
 export default class Ball extends THREE.Object3D {
     
