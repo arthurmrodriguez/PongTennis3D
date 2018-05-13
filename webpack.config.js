@@ -1,4 +1,5 @@
 const path = require('path');
+const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
@@ -14,6 +15,9 @@ module.exports = {
         new HtmlWebpackPlugin({
             title: 'PongTennis3D',
             filename: 'index.html'
+        }),
+        new webpack.ProvidePlugin({
+            'THREE': 'three'
         })
     ],
     module: {
@@ -38,5 +42,10 @@ module.exports = {
                 }]
             }
         ]
-    }
+    },
+    resolve: {
+        alias: {
+            'three/OBJLoader': path.join(__dirname, 'node_modules/three/examples/js/loaders/OBJLoader.js')
+        }
+    },
 };
