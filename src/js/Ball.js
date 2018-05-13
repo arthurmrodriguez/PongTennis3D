@@ -36,22 +36,7 @@ export default class Ball extends THREE.Object3D {
         // Listener event to detect collisions with other objects.
         // Proper function will be triggered with each collision
         // Body.id could be used for classification.
-        this.body.addEventListener("collide",function(collision){
-            switch (collision.body.id){
-                case Config.bodyIDs.courtID:
-                    // console.log("Colisiona con Court");
-                    break;
-                case Config.bodyIDs.netID:
-                    // console.log("Colisiona con Net");
-                    break;
-                case Config.bodyIDs.racketP1ID:
-                    break;
-                case Config.bodyIDs.racketP2ID:
-                    break;
-                default:
-                    break;
-            }
-        });
+        this.body.addEventListener("collide", this.handleCollision);
     }
 
     /**
@@ -69,6 +54,22 @@ export default class Ball extends THREE.Object3D {
         this.body.velocity.set(0, 0, 0);
     }
 
+    /**
+     * 
+     */
+    handleCollision(collision){
+        switch (collision.body.id) {
+            case Config.bodyIDs.courtID:
+                // console.log("Colisiona con Court");
+                break;
+            default:
+                break;
+        }
+    }
+
+    /**
+     * 
+     */
     updateMeshPosition(){
         // Copy coordinates from Cannon.js world to Three.js'
         this.mesh.position.copy(this.body.position);
