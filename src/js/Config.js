@@ -1,12 +1,12 @@
 export default {
     "racket" : {
-        "width" : 60,
-        "height" : 40,
+        "width" : 100,
+        "height" : 60,
         "depth" : 5,
         "color1" : 0x6dc0cc,
         "color2" : 0xaaaa33,
         "mass" : 0,
-        "stepSize" : 4
+        "stepSize" : 6
     },
     "court" : {
         "width" : 800,
@@ -16,13 +16,13 @@ export default {
         "mass" : 0
     },
     "net" : {
-        "height" : 25,
+        "height" : 40,
         "depth" : 0.25,
         "color" : 0xffffff,
         "mass" : 0
     },
     "ball" : {
-        "radius" : 8,
+        "radius" : 10,
         "color" : 0xffff00,
         "mass" : 5,
         "numSegments" : 16,

@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import * as CANNON from 'cannon';
 import Config from './Config';
+import racketModel from '../models/tennisRacket.obj';
 
 export default class Racket extends THREE.Object3D {
 
