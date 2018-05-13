@@ -43,7 +43,7 @@ export default {
             }
         },
         "physics" : {
-            "bounceRestitution" : 1.0,
+            "bounceRestitution" : -0.5,
             "gravity" : -100
         }
     },

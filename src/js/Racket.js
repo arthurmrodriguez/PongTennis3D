@@ -1,7 +1,6 @@
 import * as THREE from 'three';
 import * as CANNON from 'cannon';
 import Config from './Config';
-import racketModel from '../models/tennisRacket.obj';
 
 export default class Racket extends THREE.Object3D {
 
@@ -94,9 +93,9 @@ export default class Racket extends THREE.Object3D {
             this.body.position.x -= this.stepSize;
 
         if(this.loadingStrike){
-            this.mesh.translateX(this.width/2);
+            //this.mesh.translateX(this.width/2);
             this.mesh.rotateY(0.1);
-            this.mesh.translateX(-this.width / 2);
+            //this.mesh.translateX(-this.width / 2);
             this.body.position.copy(this.mesh.position);
             this.body.quaternion.copy(this.mesh.quaternion);
         } /*else if(this.releasingStrike){
