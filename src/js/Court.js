@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import * as CANNON from 'cannon';
 import Config from './Config';
 import Net from './Net';
-import tennisCourt from '../img/tennistexture.png';
+import tennisCourt from '../img/tennisCourt.png';
 
 export default class Court extends THREE.Object3D {
 
@@ -21,7 +21,7 @@ export default class Court extends THREE.Object3D {
 
         // 1 - THREE object
         this.geometry = new THREE.CubeGeometry(this.width, this.height, this.depth);
-        this.material = new THREE.MeshPhongMaterial({ color: this.color });
+        this.material = new THREE.MeshPhongMaterial({ map: new THREE.TextureLoader().load(tennisCourt) });
         this.mesh = new THREE.Mesh(this.geometry, this.material);
         this.mesh.receiveShadow = true;
         this.add(this.mesh);
