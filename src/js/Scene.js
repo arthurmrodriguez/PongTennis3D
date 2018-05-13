@@ -85,8 +85,8 @@ export default class Scene extends THREE.Scene {
             this.ball.contactMaterial,
             this.racket1.contactMaterial,
             {
-                friction: 0.5,
-                restitution: -this.restitution
+                friction: 0.0,
+                restitution: this.restitution
             }
         );
         this.world.addContactMaterial(this.ballRacket1Material);
@@ -95,8 +95,8 @@ export default class Scene extends THREE.Scene {
             this.ball.contactMaterial,
             this.racket2.contactMaterial,
             {
-                friction: 0.5,
-                restitution: -this.restitution
+                friction: 0.0,
+                restitution: this.restitution
             }
         );
         this.world.addContactMaterial(this.ballRacket2Material);
