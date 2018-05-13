@@ -24,19 +24,21 @@
   },
   "homepage": "https://github.com/adrianmorente/tennis-game-threejs#readme",
   "dependencies": {
-    "@tweenjs/tween.js": "^17.2.0",
     "babel-core": "^6.26.3",
     "babel-loader": "^7.1.4",
     "babel-preset-es2015": "^6.24.1",
     "cannon": "^0.6.2",
-    "file-loader": "^1.1.11",
     "html-webpack-plugin": "^3.2.0",
     "jquery": "^3.3.1",
     "three": "^0.92.0",
     "three-trackballcontrols": "0.0.7",
-    "url-loader": "^1.0.1",
     "webpack": "^4.8.2",
     "webpack-cli": "^2.1.3",
     "webpack-dev-server": "^3.1.4"
+  },
+  "devDependencies": {
+    "file-loader": "^1.1.11",
+    "url-loader": "^1.0.1",
+    "webpack-obj-loader": "^1.0.4"
   }
 }
