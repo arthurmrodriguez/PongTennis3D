@@ -1,22 +1,23 @@
 export default {
     "racket" : {
-        "width" : 20,
-        "height" : 20,
-        "depth" : 20,
-        "color" : 0x6dc0cc,
+        "width" : 60,
+        "height" : 40,
+        "depth" : 5,
+        "color1" : 0x6dc0cc,
+        "color2" : 0xaaaa33,
         "mass" : 0,
-        "stepSize" : 1
+        "stepSize" : 4
     },
     "court" : {
-        "width" : 200,
+        "width" : 800,
         "height" : 1,
-        "depth" : 400,
+        "depth" : 1600,
         "color" : 0x6dc066,
         "mass" : 0
     },
     "net" : {
         "height" : 25,
-        "depth" : 0.5,
+        "depth" : 0.25,
         "color" : 0xffffff,
         "mass" : 0
     },
@@ -24,12 +25,22 @@ export default {
         "radius" : 8,
         "color" : 0xffff00,
         "mass" : 5,
-        "numSegments" : 32
+        "numSegments" : 16,
+        "bounceHeight" : 60
     },
     "scenario" : {
         "ambientLight" : {
             "color" : 0xffffff,
             "intensity" : 0.5
+        },
+        "spotLight" : {
+            "color" : 0xffffff,
+            "intensity" : 0.5,
+            "position" : {
+                "x" : 0,
+                "y" : 500,
+                "z" : 0
+            }
         },
         "physics" : {
             "bounceRestitution" : 1.0,

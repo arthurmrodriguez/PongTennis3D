@@ -4,14 +4,14 @@ import Config from './Config';
 
 export default class Racket extends THREE.Object3D {
 
-    constructor() {
+    constructor(color) {
         super();
 
         // Mathematical description
         this.width = Config.racket.width;
         this.height = Config.racket.height;
         this.depth = Config.racket.depth;
-        this.color = Config.racket.color;
+        this.color = color;
         this.mass = Config.racket.mass;
         this.stepSize = Config.racket.stepSize;
         this.controls = null;
@@ -21,6 +21,8 @@ export default class Racket extends THREE.Object3D {
         this.movingForward = false;
         this.movingLeft = false;
         this.movingRight = false;
+        this.loadingStrike = false;
+        this.releasingStrike = false;
 
         // 1 - THREE object
         this.geometry = new THREE.CubeGeometry(this.width, this.height, this.depth);
@@ -37,7 +39,18 @@ export default class Racket extends THREE.Object3D {
             material: this.contactMaterial
         });
         this.body.addShape(this.racketShape);
-        Config.bodyIDs.racketP1ID = this.body.id;
+
+        // Listener event to detect collisions with other objects.
+        // Proper function will be triggered with each collision
+        // Body.id could be used for classification.
+        this.body.addEventListener("collide", function (collision) {
+            switch (collision.body.id) {
+                case Config.bodyIDs.ballID:
+                    break;
+                default:
+                    break;
+            }
+        });
     }
 
     /**
@@ -63,16 +76,13 @@ export default class Racket extends THREE.Object3D {
         this.controls.down = keys.down;
         this.controls.left = keys.left;
         this.controls.right = keys.right;
+        this.controls.strike = keys.strike;
     }
 
     /**
      * It copies the body's position into the THREE mesh
      */
     updateMeshPosition(){
-        // Copy coordinates from Cannon.js world to Three.js'
-        this.mesh.position.copy(this.body.position);
-        this.mesh.quaternion.copy(this.body.quaternion);
-
         if(this.movingForward)
             this.body.position.z += this.stepSize;
         if(this.movingBackwards)
@@ -81,6 +91,20 @@ export default class Racket extends THREE.Object3D {
             this.body.position.x += this.stepSize;
         if(this.movingRight)
             this.body.position.x -= this.stepSize;
+
+        if(this.loadingStrike){
+            this.mesh.translateX(this.width/2);
+            this.mesh.rotateY(0.1);
+            this.mesh.translateX(-this.width / 2);
+            this.body.position.copy(this.mesh.position);
+            this.body.quaternion.copy(this.mesh.quaternion);
+        } /*else if(this.releasingStrike){
+            
+        }*/
+        
+        // Copy coordinates from Cannon.js world to Three.js'
+        this.mesh.position.copy(this.body.position);
+        this.mesh.quaternion.copy(this.body.quaternion);
     }
 
     /**
@@ -101,6 +125,10 @@ export default class Racket extends THREE.Object3D {
                 break;
             case this.controls.right:
                 this.movingRight = true;
+                break;
+            case this.controls.strike:
+                this.loadingStrike = true;
+                this.releasingStrike = false;
                 break;
         }
     }
@@ -123,6 +151,10 @@ export default class Racket extends THREE.Object3D {
                 break;
             case this.controls.right:
                 this.movingRight = false;
+                break;
+            case this.controls.strike:
+                this.loadingStrike = false;
+                this.releasingStrike = true;
                 break;
         }
     }

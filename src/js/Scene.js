@@ -54,17 +54,19 @@ export default class Scene extends THREE.Scene {
         this.world.addBody(this.ball.body);
 
         // Trial rackets
-        this.racket1 = new Racket();
-        this.racket1.setPosition(0, this.racket1.height, -Config.court.depth/2);
+        this.racket1 = new Racket(Config.racket.color1);
+        this.racket1.setPosition(0, this.racket1.height/2, -Config.court.depth/2);
         this.racket1.setControls(Config.playerOnekeys);
         this.add(this.racket1);
         this.world.addBody(this.racket1.body);
+        Config.bodyIDs.racketP1ID = this.racket1.body.id;
 
-        this.racket2 = new Racket();
-        this.racket2.setPosition(0, this.racket2.height, Config.court.depth/2);
+        this.racket2 = new Racket(Config.racket.color2);
+        this.racket2.setPosition(0, this.racket2.height/2, Config.court.depth/2);
         this.racket2.setControls(Config.playerTwokeys);
         this.add(this.racket2);
         this.world.addBody(this.racket2.body);
+        Config.bodyIDs.racketP2ID = this.racket2.body.id;
 
         // Collisions work correctly without contact materials, but there aren't any bounces.
         // Contact material between the ball and the ground
@@ -83,8 +85,8 @@ export default class Scene extends THREE.Scene {
             this.ball.contactMaterial,
             this.racket1.contactMaterial,
             {
-                friction: 0.0,
-                restitution: this.restitution*1.2
+                friction: 0.5,
+                restitution: -this.restitution
             }
         );
         this.world.addContactMaterial(this.ballRacket1Material);
@@ -93,8 +95,8 @@ export default class Scene extends THREE.Scene {
             this.ball.contactMaterial,
             this.racket2.contactMaterial,
             {
-                friction: 0.0,
-                restitution: this.restitution*1.2
+                friction: 0.5,
+                restitution: -this.restitution
             }
         );
         this.world.addContactMaterial(this.ballRacket2Material);

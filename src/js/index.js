@@ -36,15 +36,15 @@ function createRenderer(){
 function createCameras(){
     // Player one - camera
     playerOneCamera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 5000);
-    playerOneCamera.position.y = 200;
-    playerOneCamera.position.z = 400;
+    playerOneCamera.position.y = Config.court.width;
+    playerOneCamera.position.z = Config.court.depth;
     playerOneCamera.lookAt(new THREE.Vector3(0, 0, 0));
     playerOneControls = new TrackballControls(playerOneCamera, renderer);
 
     // Player two - camera
     playerTwoCamera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 5000);
-    playerTwoCamera.position.y = 200;
-    playerTwoCamera.position.z = -400;
+    playerTwoCamera.position.y = Config.court.width;
+    playerTwoCamera.position.z = -Config.court.depth;
     playerTwoCamera.lookAt(new THREE.Vector3(0, 0, 0));
     playerTwoControls = new TrackballControls(playerTwoCamera, renderer);
 }

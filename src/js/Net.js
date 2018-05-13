@@ -23,10 +23,8 @@ export default class Net extends THREE.Object3D {
         this.texture = new THREE.TextureLoader().load(tennisNet);
         this.texture.wrapT = THREE.RepeatWrapping;
         this.texture.wrapS = THREE.RepeatWrapping;
-        this.texture.repeat.set( 8, 1 );
-        this.material = new THREE.MeshPhongMaterial({
-            map: this.texture
-        });
+        this.texture.repeat.set( 20, 1 );
+        this.material = new THREE.MeshPhongMaterial({ map: this.texture });
         this.mesh = new THREE.Mesh(this.geometry, this.material);
         this.mesh.receiveShadow = true;
         this.mesh.castShadow = true;

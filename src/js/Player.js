@@ -7,8 +7,8 @@ export default class Player {
      * 
      * @param {*} parameters 
      */
-    constructor(parameters){
-        this.keys = parameters.keys;
+    constructor(name = "Anonymous", keys){
+        
     }
 
 }

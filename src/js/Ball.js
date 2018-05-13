@@ -30,7 +30,7 @@ export default class Ball extends THREE.Object3D {
             material: this.contactMaterial 
         });
         this.body.addShape(this.sphereShape);
-        this.body.position.set(0,50,-15);
+        this.body.position.set(0, Config.ball.bounceHeight, -15);
         Config.bodyIDs.ballID = this.body.id;
 
         // Listener event to detect collisions with other objects.
@@ -45,7 +45,8 @@ export default class Ball extends THREE.Object3D {
                     // console.log("Colisiona con Net");
                     break;
                 case Config.bodyIDs.racketP1ID:
-                    // console.log("Colisiona con Racket");
+                    break;
+                case Config.bodyIDs.racketP2ID:
                     break;
                 default:
                     break;
@@ -64,6 +65,8 @@ export default class Ball extends THREE.Object3D {
         this.body.position.x = x;
         this.body.position.y = y;
         this.body.position.z = z;
+        this.body.angularVelocity.set(0, 0, 0);
+        this.body.velocity.set(0, 0, 0);
     }
 
     updateMeshPosition(){
@@ -73,8 +76,7 @@ export default class Ball extends THREE.Object3D {
 
         // temporal para pruebas
         if(this.body.position.y <= -50){
-            this.body.position = new CANNON.Vec3(0, 50, 0);
-            this.body.velocity.set(0, 0, 0);
+            this.setPosition(0, 60, Config.court.depth/4);
         }
     }
 }
