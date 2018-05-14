@@ -54,15 +54,15 @@ export default class Scene extends THREE.Scene {
         this.world.addBody(this.ball.body);
 
         // Trial rackets
-        this.racket1 = new Racket(Config.racket.color1);
+        this.racket1 = new Racket(Config.racket.color1, false);
         this.racket1.setPosition(0, this.racket1.height/2, -Config.court.depth/2);
         this.racket1.setControls(Config.playerOnekeys);
         this.add(this.racket1);
         this.world.addBody(this.racket1.body);
         Config.bodyIDs.racketP1ID = this.racket1.body.id;
-
-        this.racket2 = new Racket(Config.racket.color2);
-        this.racket2.setPosition(0, this.racket2.height/2, Config.court.depth/2);
+        
+        this.racket2 = new Racket(Config.racket.color2, true);
+        this.racket2.setPosition(0, this.racket2.height/2, -Config.court.depth/2);
         this.racket2.setControls(Config.playerTwokeys);
         this.add(this.racket2);
         this.world.addBody(this.racket2.body);
@@ -75,7 +75,7 @@ export default class Scene extends THREE.Scene {
             this.ball.contactMaterial,
             {
                 friction: 0.0,
-                restitution: this.restitution
+                restitution: this.restitution*10
             }
         );
         this.world.addContactMaterial(this.ballGroundMaterial);

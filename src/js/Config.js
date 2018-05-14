@@ -6,7 +6,9 @@ export default {
         "color1" : 0x6dc0cc,
         "color2" : 0xaaaa33,
         "mass" : 0,
-        "stepSize" : 6
+        "stepSize" : 6,
+        "rotationStep" : 0.2,
+        "maxRotation" : Math.PI/4
     },
     "court" : {
         "width" : 800,
@@ -26,7 +28,7 @@ export default {
         "color" : 0xffff00,
         "mass" : 5,
         "numSegments" : 16,
-        "bounceHeight" : 60
+        "bounceHeight" : 100
     },
     "scenario" : {
         "ambientLight" : {
@@ -43,7 +45,7 @@ export default {
             }
         },
         "physics" : {
-            "bounceRestitution" : -0.5,
+            "bounceRestitution" : 0.1,
             "gravity" : -100
         }
     },
@@ -55,10 +57,10 @@ export default {
         "strike" : "Space"
     },
     "playerTwokeys" : {
-        "up" : "ArrowDown",
-        "down" : "ArrowUp",
-        "left" : "ArrowRight",
-        "right" : "ArrowLeft",
+        "up" : "ArrowUp",
+        "down" : "ArrowDown",
+        "left" : "ArrowLeft",
+        "right" : "ArrowRight",
         "strike" : "Enter"
     },
     "bodyIDs" : {

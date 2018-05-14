@@ -4,7 +4,7 @@ import Config from './Config';
 
 export default class Racket extends THREE.Object3D {
 
-    constructor(color) {
+    constructor(color, opposite = false) {
         super();
 
         // Mathematical description
@@ -15,6 +15,7 @@ export default class Racket extends THREE.Object3D {
         this.mass = Config.racket.mass;
         this.stepSize = Config.racket.stepSize;
         this.controls = null;
+        this.opposite = opposite;
 
         // Animation/movement parameters
         this.movingBackwards = false;
@@ -23,16 +24,19 @@ export default class Racket extends THREE.Object3D {
         this.movingRight = false;
         this.loadingStrike = false;
         this.releasingStrike = false;
+        this.idle = true;
 
         // 1 - THREE object
         this.geometry = new THREE.CubeGeometry(this.width, this.height, this.depth);
         this.material = new THREE.MeshPhongMaterial({ color: this.color });
         this.mesh = new THREE.Mesh(this.geometry, this.material);
+        if(this.opposite)
+            this.mesh.rotation.set(0, Math.PI, 0);
         this.mesh.receiveShadow = true;
         this.add(this.mesh);
 
         // 2 - CANNON object
-        this.racketShape = new CANNON.Box(new CANNON.Vec3(this.width/2, this.height/2, this.depth/2));
+        this.racketShape = new CANNON.Box(new CANNON.Vec3(this.width/2, this.height/2, this.depth*10));
         this.contactMaterial = new CANNON.Material();
         this.body = new CANNON.Body({
             mass: 0,
@@ -61,9 +65,9 @@ export default class Racket extends THREE.Object3D {
      * @param {int} z 
      */
     setPosition(x = 0, y = 0, z = 0){
-        this.body.position.x = x;
-        this.body.position.y = y;
-        this.body.position.z = z;
+        this.mesh.position.x = x;
+        this.mesh.position.y = y;
+        this.mesh.position.z = z;
     }
 
     /**
@@ -84,27 +88,44 @@ export default class Racket extends THREE.Object3D {
      */
     updateMeshPosition(){
         if(this.movingForward)
-            this.body.position.z += this.stepSize;
+            this.mesh.position.z += this.stepSize;
         if(this.movingBackwards)
-            this.body.position.z -= this.stepSize;
+            this.mesh.position.z -= this.stepSize;
         if(this.movingLeft)
-            this.body.position.x += this.stepSize;
+            this.mesh.position.x += this.stepSize;
         if(this.movingRight)
-            this.body.position.x -= this.stepSize;
+            this.mesh.position.x -= this.stepSize;
 
-        if(this.loadingStrike){
-            //this.mesh.translateX(this.width/2);
-            this.mesh.rotateY(0.1);
-            //this.mesh.translateX(-this.width / 2);
-            this.body.position.copy(this.mesh.position);
-            this.body.quaternion.copy(this.mesh.quaternion);
-        } /*else if(this.releasingStrike){
-            
-        }*/
+        this.mesh.translateX(this.width / 2);
+        if(this.loadingStrike){ // loading powerful strike
+            if (this.mesh.rotation.y >= -Config.racket.maxRotation)
+                this.mesh.rotateY(-0.1);
+            else{
+                this.loadingStrike = false;
+                this.idle = false;
+            }
+        }
+        else if(this.releasingStrike){ // releasing strike to the ball
+            if (this.mesh.rotation.y <= Config.racket.maxRotation)
+                this.mesh.rotateY(0.2);
+            else{
+                this.releasingStrike = false;
+                this.idle = true;
+            }
+        }
+        else if(this.idle){ // return back to origin position
+            if(this.mesh.rotation.y > 0)
+                this.mesh.rotateY(-0.2);
+            else if(this.mesh.rotation.y < 0)
+                this.mesh.rotateY(0.2);
+            else
+                this.mesh.rotation.set(0, 0, 0);
+        }
+        this.mesh.translateX(-this.width / 2);
         
         // Copy coordinates from Cannon.js world to Three.js'
-        this.mesh.position.copy(this.body.position);
-        this.mesh.quaternion.copy(this.body.quaternion);
+        this.body.position.copy(this.mesh.position);
+        this.body.quaternion.copy(this.mesh.quaternion);
     }
 
     /**
