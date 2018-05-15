@@ -30,8 +30,6 @@ export default class Racket extends THREE.Object3D {
         this.geometry = new THREE.CubeGeometry(this.width, this.height, this.depth);
         this.material = new THREE.MeshPhongMaterial({ color: this.color });
         this.mesh = new THREE.Mesh(this.geometry, this.material);
-        if(this.opposite)
-            this.mesh.rotation.set(0, Math.PI, 0);
         this.mesh.receiveShadow = true;
         this.add(this.mesh);
 
@@ -50,6 +48,12 @@ export default class Racket extends THREE.Object3D {
         this.body.addEventListener("collide", function (collision) {
             switch (collision.body.id) {
                 case Config.bodyIDs.ballID:
+                    break;
+                case Config.bodyIDs.racketP1ID:
+                    console.log("CHOCO CON RAQUETA 1");
+                    break;
+                case Config.bodyIDs.racketP2ID:
+                    console.log("CHOCO CON RAQUETA 2");
                     break;
                 default:
                     break;
@@ -115,17 +119,16 @@ export default class Racket extends THREE.Object3D {
         }
         else if(this.idle){ // return back to origin position
             if(this.mesh.rotation.y > 0)
-                this.mesh.rotateY(-0.2);
-            else if(this.mesh.rotation.y < 0)
-                this.mesh.rotateY(0.2);
+                this.mesh.rotateY(-0.1);
             else
-                this.mesh.rotation.set(0, 0, 0);
+                this.mesh.rotation.set(0,0,0);
         }
         this.mesh.translateX(-this.width / 2);
         
-        // Copy coordinates from Cannon.js world to Three.js'
+        // Copy coordinates from THREE world to CANNON world
         this.body.position.copy(this.mesh.position);
         this.body.quaternion.copy(this.mesh.quaternion);
+
     }
 
     /**

@@ -62,8 +62,10 @@ export default class Scene extends THREE.Scene {
         Config.bodyIDs.racketP1ID = this.racket1.body.id;
         
         this.racket2 = new Racket(Config.racket.color2, true);
+        this.racket2.rotation.set(0, Math.PI, 0);
         this.racket2.setPosition(0, this.racket2.height/2, -Config.court.depth/2);
         this.racket2.setControls(Config.playerTwokeys);
+
         this.add(this.racket2);
         this.world.addBody(this.racket2.body);
         Config.bodyIDs.racketP2ID = this.racket2.body.id;

@@ -30,7 +30,7 @@ export default class Ball extends THREE.Object3D {
             material: this.contactMaterial 
         });
         this.body.addShape(this.sphereShape);
-        this.body.position.set(0, Config.ball.bounceHeight, -15);
+        this.body.position.set(0, Config.ball.bounceHeight, 200);
         Config.bodyIDs.ballID = this.body.id;
 
         // Listener event to detect collisions with other objects.
