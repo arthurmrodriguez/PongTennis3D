@@ -4,10 +4,9 @@ import $ from 'jquery';
 import Scene from './Scene';
 import Player from './Player';
 import Config from './Config';
-import './CannonDebugRenderer';
 
 // Main variables
-var scene, renderer, debugRenderer;
+var scene, renderer;
 
 // Two players, two cameras. Trackball Controls to walk around the scene
 var playerOne, playerOneCamera, playerOneControls;
@@ -15,7 +14,6 @@ var playerTwo, playerTwoCamera, playerTwoControls;
 
 // Methods to run on load
 init();
-initPlayers();
 animate();
 
 /**
@@ -56,21 +54,12 @@ function createCameras(){
 function init(){
     // The scene with the court, players & stuff
     scene = new Scene();
-    debugRenderer = new THREE.CannonDebugRenderer(scene, scene.world);
 
     // Views
     createCameras();
 
     // The renderer
     createRenderer();
-}
-
-/**
- * 
- */
-function initPlayers(){
-    playerOne = new Player(Config.playerOnekeys);
-    playerTwo = new Player(Config.playerTwokeys);
 }
 
 /**
@@ -84,7 +73,7 @@ function animate(){
     updateMeshPosition();
 
     // Infinite loop
-    debugRenderer.update();
+    //debugRenderer.update();
     render();
 }
 
@@ -147,22 +136,3 @@ $(function() {
     window.addEventListener('keydown', computeKeyDown, false);
     window.addEventListener('keyup', computeKeyUp, false);
 })
-
-
-
-
-/*
-var world = new CANNON.World();
-var scene = new THREE.Scene();
-var cannonDebugRenderer = new THREE.CannonDebugRenderer( scene, world );
-
-// ...add things to world and scene...
-
-function render() {
-    requestAnimationFrame( render );
-    world.step( timeStep );            // Update physics
-    cannonDebugRenderer.update();      // Update the debug renderer
-    renderer.render( scene, camera );  // Render the scene
-}
-render();
-*/

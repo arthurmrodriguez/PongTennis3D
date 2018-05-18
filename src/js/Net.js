@@ -1,5 +1,4 @@
 import * as THREE from 'three';
-import * as CANNON from 'cannon';
 import Config from './Config';
 import tennisNet from '../img/tennisNet.jpg';
 
@@ -30,21 +29,6 @@ export default class Net extends THREE.Object3D {
         this.mesh.castShadow = true;
         this.add(this.mesh);
 
-        // 2 - CANNON object
-        this.netShape = new CANNON.Box(new CANNON.Vec3(this.width/2, this.height/2, this.depth/2));
-        this.contactMaterial = new CANNON.Material();
-        this.body = new CANNON.Body({
-            mass: this.mass,
-            material: this.contactMaterial
-        });
-        this.body.addShape(this.netShape);
-
-        Config.bodyIDs.netID = this.body.id;
-    }
-
-    updateMeshPosition() {
-        // Copy coordinates from Cannon.js world to Three.js'
-        this.mesh.position.copy(this.body.position);
-        this.mesh.quaternion.copy(this.body.quaternion);
+        
     }
 }

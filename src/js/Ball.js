@@ -1,4 +1,3 @@
-import * as CANNON from 'cannon';
 import * as THREE from 'three';
 import Config from './Config';
 import ballTexture from '../img/tennisBall.png';
@@ -22,21 +21,6 @@ export default class Ball extends THREE.Object3D {
         this.mesh.receiveShadow = true;
         this.add(this.mesh);
 
-        // 2- CANNON object
-        this.sphereShape = new CANNON.Sphere(this.radius);
-        this.contactMaterial = new CANNON.Material();
-        this.body = new CANNON.Body({
-            mass: this.mass, 
-            material: this.contactMaterial 
-        });
-        this.body.addShape(this.sphereShape);
-        this.body.position.set(0, Config.ball.bounceHeight, 200);
-        Config.bodyIDs.ballID = this.body.id;
-
-        // Listener event to detect collisions with other objects.
-        // Proper function will be triggered with each collision
-        // Body.id could be used for classification.
-        this.body.addEventListener("collide", this.handleCollision);
     }
 
     /**
@@ -47,37 +31,11 @@ export default class Ball extends THREE.Object3D {
      * @param {int} z 
      */
     setPosition(x = 0, y = 0, z = 0) {
-        this.body.position.x = x;
-        this.body.position.y = y;
-        this.body.position.z = z;
-        this.body.angularVelocity.set(0, 0, 0);
-        this.body.velocity.set(0, 0, 0);
+        // this.body.position.x = x;
+        // this.body.position.y = y;
+        // this.body.position.z = z;
+        // this.body.angularVelocity.set(0, 0, 0);
+        // this.body.velocity.set(0, 0, 0);
     }
 
-    /**
-     * 
-     */
-    handleCollision(collision){
-        switch (collision.body.id) {
-            case Config.bodyIDs.courtID:
-                // console.log("Colisiona con Court");
-                break;
-            default:
-                break;
-        }
-    }
-
-    /**
-     * 
-     */
-    updateMeshPosition(){
-        // Copy coordinates from Cannon.js world to Three.js'
-        this.mesh.position.copy(this.body.position);
-        this.mesh.quaternion.copy(this.body.quaternion);
-
-        // temporal para pruebas
-        if(this.body.position.y <= -50){
-            this.setPosition(0, 60, Config.court.depth/4);
-        }
-    }
 }

@@ -43,9 +43,7 @@ module.exports = {
             }
         ]
     },
-    resolve: {
-        alias: {
-            'three/OBJLoader': path.join(__dirname, 'node_modules/three/examples/js/loaders/OBJLoader.js')
-        }
-    },
+    node: {
+        fs: 'empty'
+    }
 };
