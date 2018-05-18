@@ -21,6 +21,18 @@ export default class Ball extends THREE.Object3D {
         this.mesh.receiveShadow = true;
         this.add(this.mesh);
 
+        // 2 - AMMO body
+        this.shape = new Ammo.btSphereShape(this.radius);
+        this.shape.setMargin(0.05);
+
+        // Create rigid body
+        this.body = new Ammo.btRigidBody(
+            new Ammo.btRigidBodyConstructionInfo({
+                mass: this.mass,
+                collisionShape: this.shape
+            })
+        );
+        this.mesh.userData.physicsBody = this.body;
     }
 
     /**

@@ -46,10 +46,12 @@ export default class Scene extends THREE.Scene {
         // Court: simple ground plane
         this.court = new Court();
         this.add(this.court);
+        this.world.addRigidBody(this.court.body);
 
         // Ball
         this.ball = new Ball();
         this.add(this.ball);
+        this.world.addRigidBody(this.ball.body);
 
         // Trial rackets
         this.racket1 = new Racket(Config.racket.color1, false);
@@ -73,9 +75,9 @@ export default class Scene extends THREE.Scene {
         this.broadphase = new Ammo.btDbvtBroadphase();
         this.solver = new Ammo.btSequentialImpulseConstraintSolver();
         this.softBodySolver = new Ammo.btDefaultSoftBodySolver();
-        this.physicsWorld = new Ammo.btSoftRigidDynamicsWorld(this.dispatcher, this.broadphase, this.solver, this.collisionConfiguration, this.softBodySolver);
-        this.physicsWorld.setGravity(new Ammo.btVector3(0, this.gravity, 0));
-        this.physicsWorld.getWorldInfo().set_m_gravity(new Ammo.btVector3(0, this.gravity, 0));
+        this.world = new Ammo.btSoftRigidDynamicsWorld(this.dispatcher, this.broadphase, this.solver, this.collisionConfiguration, this.softBodySolver);
+        this.world.setGravity(new Ammo.btVector3(0, this.gravity, 0));
+        this.world.getWorldInfo().set_m_gravity(new Ammo.btVector3(0, this.gravity, 0));
     }
 
     /**
@@ -98,6 +100,7 @@ export default class Scene extends THREE.Scene {
      * 
      */
     updateMeshPosition(){
+        this.world.stepSimulation(this.timeStep, 10);
         this.racket1.updateMeshPosition();
         this.racket2.updateMeshPosition();
     }
