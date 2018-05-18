@@ -65,7 +65,6 @@ export default class Scene extends THREE.Scene {
         this.racket2.rotation.set(0, Math.PI, 0);
         this.racket2.setPosition(0, this.racket2.height/2, -Config.court.depth/2);
         this.racket2.setControls(Config.playerTwokeys);
-
         this.add(this.racket2);
         this.world.addBody(this.racket2.body);
         Config.bodyIDs.racketP2ID = this.racket2.body.id;
@@ -77,7 +76,7 @@ export default class Scene extends THREE.Scene {
             this.ball.contactMaterial,
             {
                 friction: 0.0,
-                restitution: this.restitution*10
+                restitution: Config.court.restitution
             }
         );
         this.world.addContactMaterial(this.ballGroundMaterial);
@@ -88,7 +87,7 @@ export default class Scene extends THREE.Scene {
             this.racket1.contactMaterial,
             {
                 friction: 0.0,
-                restitution: this.restitution
+                restitution: Config.racket.restitution
             }
         );
         this.world.addContactMaterial(this.ballRacket1Material);
@@ -98,7 +97,7 @@ export default class Scene extends THREE.Scene {
             this.racket2.contactMaterial,
             {
                 friction: 0.0,
-                restitution: this.restitution
+                restitution: Config.racket.restitution
             }
         );
         this.world.addContactMaterial(this.ballRacket2Material);

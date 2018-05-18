@@ -6,7 +6,8 @@ export default {
         "color1" : 0x6dc0cc,
         "color2" : 0xaaaa33,
         "mass" : 0,
-        "stepSize" : 6,
+        "restitution" : 0.5,
+        "stepSize" : 5,
         "rotationStep" : 0.2,
         "maxRotation" : Math.PI/4
     },
@@ -15,7 +16,8 @@ export default {
         "height" : 1,
         "depth" : 1600,
         "color" : 0x6dc066,
-        "mass" : 0
+        "mass" : 0,
+        "restitution" : 1.0
     },
     "net" : {
         "height" : 40,
@@ -45,7 +47,6 @@ export default {
             }
         },
         "physics" : {
-            "bounceRestitution" : 0.1,
             "gravity" : -100
         }
     },
