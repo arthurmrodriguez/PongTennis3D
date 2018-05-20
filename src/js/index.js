@@ -56,7 +56,7 @@ function createCameras(){
 function init(){
     // The scene with the court, players & stuff
     scene = new Scene();
-    debugRenderer = new THREE.CannonDebugRenderer(scene, scene.world);
+    //debugRenderer = new THREE.CannonDebugRenderer(scene, scene.world);
 
     // Views
     createCameras();
@@ -84,7 +84,7 @@ function animate(){
     updateMeshPosition();
 
     // Infinite loop
-    debugRenderer.update();
+    //debugRenderer.update();
     render();
 }
 

@@ -26,7 +26,7 @@ export default class Scene extends THREE.Scene {
         this.gravity = Config.scenario.physics.gravity;
 
         // Time of step in CANNON's world. Equal to a maximum of 60 FPS
-        this.timeStep = 1 / 60;
+        this.timeStep = 1 / 45;
 
         // Init cannon world
         this.initCannon();
@@ -53,17 +53,19 @@ export default class Scene extends THREE.Scene {
         this.add(this.ball);
         this.world.addBody(this.ball.body);
 
+        this.ballIndicator = new Ball();
+        this.add(this.ballIndicator);
+
         // Trial rackets
-        this.racket1 = new Racket(Config.racket.color1, false);
-        this.racket1.setPosition(0, this.racket1.height/2, -Config.court.depth/2);
+        this.racket1 = new Racket(Config.racket.color1,false);
         this.racket1.setControls(Config.playerOnekeys);
+        this.racket1.setPosition(0,this.racket1.height/2,-this.court.depth/2);
         this.add(this.racket1);
         this.world.addBody(this.racket1.body);
         Config.bodyIDs.racketP1ID = this.racket1.body.id;
         
-        this.racket2 = new Racket(Config.racket.color2, true);
-        this.racket2.rotation.set(0, Math.PI, 0);
-        this.racket2.setPosition(0, this.racket2.height/2, -Config.court.depth/2);
+        this.racket2 = new Racket(Config.racket.color2,true);
+        this.racket2.setPosition(0, this.racket2.height/2,this.court.depth/2);
         this.racket2.setControls(Config.playerTwokeys);
         this.add(this.racket2);
         this.world.addBody(this.racket2.body);
@@ -87,7 +89,7 @@ export default class Scene extends THREE.Scene {
             this.racket1.contactMaterial,
             {
                 friction: 0.0,
-                restitution: Config.racket.restitution
+                restitution: this.racket1.restitution
             }
         );
         this.world.addContactMaterial(this.ballRacket1Material);
@@ -97,7 +99,7 @@ export default class Scene extends THREE.Scene {
             this.racket2.contactMaterial,
             {
                 friction: 0.0,
-                restitution: Config.racket.restitution
+                restitution: this.racket2.restitution
             }
         );
         this.world.addContactMaterial(this.ballRacket2Material);
@@ -110,7 +112,8 @@ export default class Scene extends THREE.Scene {
         // The cannon world. It handles physics
         this.world = new CANNON.World();
         this.world.gravity.set(0, this.gravity, 0);
-        this.world.broadphase = new CANNON.NaiveBroadphase();
+        this.world.solver.iterations = 60;
+        this.world.solver.tolerance = 0;
     }
 
     /**
@@ -121,6 +124,7 @@ export default class Scene extends THREE.Scene {
         this.world.step(this.timeStep);
         this.court.updateMeshPosition();
         this.ball.updateMeshPosition();
+        this.ballIndicator.position.set(this.ball.mesh.position.x,0,this.ball.mesh.position.z);
         this.racket1.updateMeshPosition();
         this.racket2.updateMeshPosition();
     }

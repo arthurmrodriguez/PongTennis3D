@@ -1,23 +1,23 @@
 export default {
     "racket" : {
-        "width" : 100,
-        "height" : 60,
+        "width" : 120,
+        "height" : 100,
         "depth" : 5,
         "color1" : 0x6dc0cc,
         "color2" : 0xaaaa33,
-        "mass" : 0,
-        "restitution" : 0.5,
+        "mass" : 5,
+        "restitution" : 1.01,
         "stepSize" : 5,
         "rotationStep" : 0.2,
-        "maxRotation" : Math.PI/4
+        "maxRotation" : 0.1
     },
     "court" : {
-        "width" : 800,
+        "width" : 1000,
         "height" : 1,
-        "depth" : 1600,
+        "depth" : 1800,
         "color" : 0x6dc066,
         "mass" : 0,
-        "restitution" : 1.0
+        "restitution" : 0.99
     },
     "net" : {
         "height" : 40,
@@ -26,11 +26,11 @@ export default {
         "mass" : 0
     },
     "ball" : {
-        "radius" : 10,
+        "radius" : 12,
         "color" : 0xffff00,
         "mass" : 5,
         "numSegments" : 16,
-        "bounceHeight" : 100
+        "bounceHeight" : 200
     },
     "scenario" : {
         "ambientLight" : {
@@ -47,7 +47,8 @@ export default {
             }
         },
         "physics" : {
-            "gravity" : -100
+            "gravity" : -100,
+            "bounceRestitution" : 1.0
         }
     },
     "playerOnekeys" : {
@@ -55,14 +56,16 @@ export default {
         "down" : "KeyS",
         "left" : "KeyA",
         "right" : "KeyD",
-        "strike" : "Space"
+        "rotationLeft" : "KeyC",
+        "rotationRight" : "KeyV"
     },
     "playerTwokeys" : {
-        "up" : "ArrowUp",
-        "down" : "ArrowDown",
-        "left" : "ArrowLeft",
-        "right" : "ArrowRight",
-        "strike" : "Enter"
+        "up" : "ArrowDown",
+        "down" : "ArrowUp",
+        "left" : "ArrowRight",
+        "right" : "ArrowLeft",
+        "rotationLeft" : "KeyK",
+        "rotationRight" : "KeyL"
     },
     "bodyIDs" : {
         "courtID": 0,

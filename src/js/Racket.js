@@ -4,7 +4,7 @@ import Config from './Config';
 
 export default class Racket extends THREE.Object3D {
 
-    constructor(color, opposite = false) {
+    constructor(color,opposite) {
         super();
 
         // Mathematical description
@@ -15,6 +15,7 @@ export default class Racket extends THREE.Object3D {
         this.mass = Config.racket.mass;
         this.stepSize = Config.racket.stepSize;
         this.controls = null;
+        this.restitution = Config.racket.restitution;
         this.opposite = opposite;
 
         // Animation/movement parameters
@@ -22,57 +23,46 @@ export default class Racket extends THREE.Object3D {
         this.movingForward = false;
         this.movingLeft = false;
         this.movingRight = false;
-        this.loadingStrike = false;
-        this.releasingStrike = false;
-        this.idle = true;
+        this.rotatingLeft = false;
+        this.rotatingRight = false;
 
         // 1 - THREE object
         this.geometry = new THREE.CubeGeometry(this.width, this.height, this.depth);
         this.material = new THREE.MeshPhongMaterial({ color: this.color });
         this.mesh = new THREE.Mesh(this.geometry, this.material);
+        if(this.opposite)
+            this.mesh.applyMatrix(new THREE.Matrix4().makeRotationX(0.1));
+        else
+            this.mesh.applyMatrix(new THREE.Matrix4().makeRotationX(-0.1));
+        this.mesh.applyMatrix(new THREE.Matrix4().makeTranslation(0,this.height/2,0));
         this.mesh.receiveShadow = true;
         this.add(this.mesh);
 
         // 2 - CANNON object
-        this.racketShape = new CANNON.Box(new CANNON.Vec3(this.width/2, this.height/2, this.depth*10));
+        this.racketShape = new CANNON.Box(new CANNON.Vec3(this.width/2, this.height/2, this.depth*5));
         this.contactMaterial = new CANNON.Material();
         this.body = new CANNON.Body({
             mass: 0,
             material: this.contactMaterial
         });
         this.body.addShape(this.racketShape);
-
-        // Listener event to detect collisions with other objects.
-        // Proper function will be triggered with each collision
-        // Body.id could be used for classification.
-        this.body.addEventListener("collide", function (collision) {
-            switch (collision.body.id) {
-                case Config.bodyIDs.ballID:
-                    break;
-                case Config.bodyIDs.racketP1ID:
-                    console.log("CHOCO CON RAQUETA 1");
-                    break;
-                case Config.bodyIDs.racketP2ID:
-                    console.log("CHOCO CON RAQUETA 2");
-                    break;
-                default:
-                    break;
-            }
-        });
+        this.body.velocity.set(0,0,0);
+        this.body.addEventListener("collide", this.handleCollision);
     }
 
     /**
      * Receives a point in which the object is positioned.
      * It handles the body, so that the own body positions the mesh.
-     * @param {int} x 
-     * @param {int} y 
-     * @param {int} z 
+     * @param {int} x
+     * @param {int} y
+     * @param {int} z
      */
     setPosition(x = 0, y = 0, z = 0){
         this.mesh.position.x = x;
         this.mesh.position.y = y;
         this.mesh.position.z = z;
     }
+
 
     /**
      * 
@@ -84,13 +74,15 @@ export default class Racket extends THREE.Object3D {
         this.controls.down = keys.down;
         this.controls.left = keys.left;
         this.controls.right = keys.right;
-        this.controls.strike = keys.strike;
+        this.controls.rotationLeft = keys.rotationLeft;
+        this.controls.rotationRight = keys.rotationRight;
     }
 
     /**
      * It copies the body's position into the THREE mesh
      */
     updateMeshPosition(){
+
         if(this.movingForward)
             this.mesh.position.z += this.stepSize;
         if(this.movingBackwards)
@@ -100,35 +92,32 @@ export default class Racket extends THREE.Object3D {
         if(this.movingRight)
             this.mesh.position.x -= this.stepSize;
 
-        this.mesh.translateX(this.width / 2);
-        if(this.loadingStrike){ // loading powerful strike
-            if (this.mesh.rotation.y >= -Config.racket.maxRotation)
-                this.mesh.rotateY(-0.1);
-            else{
-                this.loadingStrike = false;
-                this.idle = false;
+        if(this.rotatingLeft){
+            if (this.mesh.rotation.y <= Config.racket.maxRotation) {
+                this.mesh.rotateY(0.05);
             }
         }
-        else if(this.releasingStrike){ // releasing strike to the ball
-            if (this.mesh.rotation.y <= Config.racket.maxRotation)
-                this.mesh.rotateY(0.2);
-            else{
-                this.releasingStrike = false;
-                this.idle = true;
+        else if(this.rotatingRight){ // releasing strike to the ball
+            if (this.mesh.rotation.y >= -Config.racket.maxRotation) {
+                this.mesh.rotateY(-0.05);
             }
-        }
-        else if(this.idle){ // return back to origin position
-            if(this.mesh.rotation.y > 0)
-                this.mesh.rotateY(-0.1);
-            else
-                this.mesh.rotation.set(0,0,0);
-        }
-        this.mesh.translateX(-this.width / 2);
-        
-        // Copy coordinates from THREE world to CANNON world
-        this.body.position.copy(this.mesh.position);
-        this.body.quaternion.copy(this.mesh.quaternion);
 
+        }
+        this.body.quaternion.copy(this.mesh.quaternion);
+        this.body.position.copy(this.mesh.position);
+        this.body.position.z = this.opposite?  this.body.position.z + (this.depth*5) :
+            this.body.position.z - (this.depth*5);
+
+    }
+
+    handleCollision(collision){
+        switch (collision.body.id) {
+            case Config.bodyIDs.ballID:
+                console.log("Colisiona con Ball");
+                break;
+            default:
+                break;
+        }
     }
 
     /**
@@ -150,9 +139,13 @@ export default class Racket extends THREE.Object3D {
             case this.controls.right:
                 this.movingRight = true;
                 break;
-            case this.controls.strike:
-                this.loadingStrike = true;
-                this.releasingStrike = false;
+            case this.controls.rotationLeft:
+                this.rotatingLeft = true;
+                this.rotatingRight = false;
+                break;
+            case this.controls.rotationRight:
+                this.rotatingLeft = false;
+                this.rotatingRight = true;
                 break;
         }
     }
@@ -176,9 +169,13 @@ export default class Racket extends THREE.Object3D {
             case this.controls.right:
                 this.movingRight = false;
                 break;
-            case this.controls.strike:
-                this.loadingStrike = false;
-                this.releasingStrike = true;
+            case this.controls.rotationLeft:
+                this.rotatingLeft = false;
+                this.rotatingRight = false;
+                break;
+            case this.controls.rotationRight:
+                this.rotatingLeft = false;
+                this.rotatingRight = false;
                 break;
         }
     }

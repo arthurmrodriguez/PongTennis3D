@@ -30,7 +30,8 @@ export default class Ball extends THREE.Object3D {
             material: this.contactMaterial 
         });
         this.body.addShape(this.sphereShape);
-        this.body.position.set(0, Config.ball.bounceHeight, 200);
+        this.body.position.set(0, Config.ball.bounceHeight, -100);
+        this.body.velocity.set(0,0,150);
         Config.bodyIDs.ballID = this.body.id;
 
         // Listener event to detect collisions with other objects.
@@ -77,7 +78,8 @@ export default class Ball extends THREE.Object3D {
 
         // temporal para pruebas
         if(this.body.position.y <= -50){
-            this.setPosition(0, 60, Config.court.depth/4);
+            this.setPosition(0, Config.ball.bounceHeight, -100);
+            this.body.velocity.set(0,0,150);
         }
     }
 }
