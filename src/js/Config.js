@@ -1,13 +1,13 @@
 export default {
     "racket" : {
-        "width" : 120,
+        "width" : 140,
         "height" : 100,
-        "depth" : 5,
+        "depth" : 20,
         "color1" : 0x6dc0cc,
         "color2" : 0xaaaa33,
         "mass" : 5,
         "restitution" : 1.01,
-        "stepSize" : 5,
+        "stepSize" : 6,
         "rotationStep" : 0.2,
         "maxRotation" : 0.1
     },
@@ -39,10 +39,13 @@ export default {
         },
         "spotLight" : {
             "color" : 0xffffff,
-            "intensity" : 0.5,
+            "intensity" : 0.8,
+            "angle" : 1.3,
+            "penumbra" : 1,
+            "decay" : 1,
             "position" : {
                 "x" : 0,
-                "y" : 500,
+                "y" : 550,
                 "z" : 0
             }
         },

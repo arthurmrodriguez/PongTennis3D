@@ -36,16 +36,16 @@ function createRenderer(){
  */
 function createCameras(){
     // Player one - camera
-    playerOneCamera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 5000);
-    playerOneCamera.position.y = Config.court.width;
-    playerOneCamera.position.z = Config.court.depth;
+    playerOneCamera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 10000);
+    playerOneCamera.position.y = Config.court.depth;
+    playerOneCamera.position.z = 3*Config.court.depth/2;
     playerOneCamera.lookAt(new THREE.Vector3(0, 0, 0));
     playerOneControls = new TrackballControls(playerOneCamera, renderer);
 
     // Player two - camera
-    playerTwoCamera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 5000);
-    playerTwoCamera.position.y = Config.court.width;
-    playerTwoCamera.position.z = -Config.court.depth;
+    playerTwoCamera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 10000);
+    playerTwoCamera.position.y = Config.court.depth;
+    playerTwoCamera.position.z = -(3*Config.court.depth/2);
     playerTwoCamera.lookAt(new THREE.Vector3(0, 0, 0));
     playerTwoControls = new TrackballControls(playerTwoCamera, renderer);
 }
@@ -56,6 +56,8 @@ function createCameras(){
 function init(){
     // The scene with the court, players & stuff
     scene = new Scene();
+
+    // If necessary, we can preview the CANNON meshes
     //debugRenderer = new THREE.CannonDebugRenderer(scene, scene.world);
 
     // Views
@@ -82,9 +84,11 @@ function animate(){
 
     // Update physics world, stepping CANNON world and waiting for collisions
     updateMeshPosition();
+    
+    // If necessary, we can preview the CANNON meshes
+    //debugRenderer.update();
 
     // Infinite loop
-    //debugRenderer.update();
     render();
 }
 
@@ -146,23 +150,4 @@ function computeKeyUp(event) {
 $(function() {
     window.addEventListener('keydown', computeKeyDown, false);
     window.addEventListener('keyup', computeKeyUp, false);
-})
-
-
-
-
-/*
-var world = new CANNON.World();
-var scene = new THREE.Scene();
-var cannonDebugRenderer = new THREE.CannonDebugRenderer( scene, world );
-
-// ...add things to world and scene...
-
-function render() {
-    requestAnimationFrame( render );
-    world.step( timeStep );            // Update physics
-    cannonDebugRenderer.update();      // Update the debug renderer
-    renderer.render( scene, camera );  // Render the scene
-}
-render();
-*/
+});

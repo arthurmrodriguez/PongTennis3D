@@ -3,27 +3,40 @@ import Config from './Config';
 
 export default class SpotLight extends THREE.Light{
 
-    constructor(color = 0xffffff){
+    /**
+     * Class constructor
+     * @param {THREE.Color} color 
+     */
+    constructor(){
         super();
-        this.light = new THREE.SpotLight(color);
+
+        // Color of the light (always white)
+        this.light = new THREE.SpotLight(Config.scenario.spotLight.color);
+        this.light.intensity = Config.scenario.spotLight.intensity;
+
+        // Parameters for positioning
         this.light.position.x = Config.scenario.spotLight.position.x;
         this.light.position.y = Config.scenario.spotLight.position.y;
         this.light.position.z = Config.scenario.spotLight.position.z;
+
+        // Parameters for casting and showing high-res shadows
         this.light.castShadow = true;
         this.light.shadow.mapSize.width = 4096;
         this.light.shadow.mapSize.height = 4096;
-        this.light.intensity = Config.scenario.spotLight.intensity;
-        this.light.shadow.camera.near = 100;
-        this.light.shadow.camera.far = 1000;
-        this.light.shadow.camera.fov = 45;
+
+        // Parameters for distortion, penumbra and related stuff
+        this.light.angle = Config.scenario.spotLight.angle;
+        this.light.penumbra = Config.scenario.spotLight.penumbra;
+        this.light.decay = Config.scenario.spotLight.decay;
+
         this.add(this.light);
     }
 
     /**
-     * 
-     * @param {*} target 
-     * @param {*} angle 
-     * @param {*} distance 
+     * Its purpose it's basically adding some basical parameters chosen by the user
+     * @param {float} target 
+     * @param {float} angle 
+     * @param {float} distance 
      */
     setParameters(target, angle, distance){
         this.light.add(target);
