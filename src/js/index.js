@@ -10,12 +10,11 @@ import './CannonDebugRenderer';
 var scene, renderer, debugRenderer;
 
 // Two players, two cameras. Trackball Controls to walk around the scene
-var playerOne, playerOneCamera, playerOneControls;
-var playerTwo, playerTwoCamera, playerTwoControls;
+var playerOneCamera, playerOneControls;
+var playerTwoCamera, playerTwoControls;
 
 // Methods to run on load
 init();
-initPlayers();
 animate();
 
 /**
@@ -65,14 +64,6 @@ function init(){
 
     // The renderer
     createRenderer();
-}
-
-/**
- * 
- */
-function initPlayers(){
-    playerOne = new Player(Config.playerOnekeys);
-    playerTwo = new Player(Config.playerTwokeys);
 }
 
 /**

@@ -47,7 +47,6 @@ export default class Racket extends THREE.Object3D {
         });
         this.body.addShape(this.racketShape);
         this.body.velocity.set(0,0,0);
-        this.body.addEventListener("collide", this.handleCollision);
     }
 
     /**
@@ -107,17 +106,6 @@ export default class Racket extends THREE.Object3D {
         this.body.position.copy(this.mesh.position);
         this.body.position.z = this.opposite?  this.body.position.z + (this.depth*5) :
             this.body.position.z - (this.depth*5);
-
-    }
-
-    handleCollision(collision){
-        switch (collision.body.id) {
-            case Config.bodyIDs.ballID:
-                console.log("Colisiona con Ball");
-                break;
-            default:
-                break;
-        }
     }
 
     /**
