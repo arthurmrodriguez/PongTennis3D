@@ -22,6 +22,7 @@ export default class Ball extends THREE.Object3D {
         // Parameters needed to control the development of the game
         this.lastPlayerCollided = null;
         this.lastHalfOfCourtCollided = null;
+        this.numBounces = 0;
 
         // 1 - THREE object - creates geometry and loads a tennis ball texture
         this.geometry = new THREE.SphereGeometry(this.radius, this.numSegments, this.numSegments);
@@ -42,13 +43,6 @@ export default class Ball extends THREE.Object3D {
         this.body.position.set(0, Config.ball.bounceHeight, -100);
         this.body.velocity.set(0,0,150);
         Config.bodyIDs.ballID = this.body.id;
-
-        /**
-         * Listener event to detect collisions with other objects.
-         * Proper function will be triggered with each collision.
-         * Body.id could be used for classification.
-         */
-        this.body.addEventListener("collide", this.handleCollision);
     }
 
     /**
@@ -64,45 +58,6 @@ export default class Ball extends THREE.Object3D {
         this.body.position.z = z;
         this.body.angularVelocity.set(0, 0, 0);
         this.body.velocity.set(0, 0, 0);
-    }
-
-    /**
-     * This method checks every collision with every body on the world.
-     * It always has to check if a point has been scored by any player.
-     * 
-     * --- RULES ABOUT SCORING ---
-     * 
-     * P1 loses a point if:
-     *      - P2 hits the ball, the ball bounces in P1's half of the
-     *        court and the play ends.
-     *      - P1 hits the ball, and then the ball bounces in P1's
-     *        half of the court.
-     *      - P1 hits the ball and it goes directly out of the court.
-     * 
-     * A play ends when the ball bounces twice with no player strikes in
-     * between; or when it goes out of the court.
-     */
-    handleCollision(collision){
-        switch (collision.body.id) {
-            case Config.bodyIDs.courtID:
-                if(this.position.z > 0)
-                    this.lastHalfOfCourtCollided = "2";
-                else //this.body.position.z < 0
-                    this.lastHalfOfCourtCollided = "1";
-                break;
-            case Config.bodyIDs.netID:
-                break;
-            case Config.bodyIDs.racketP1ID:
-                this.lastPlayerCollided = "1";
-                break;
-            case Config.bodyIDs.racketP2ID:
-                this.lastPlayerCollided = "2";
-                break;
-            default:
-                break;
-        }
-        console.log('\n\n\nlast court collision: ' + this.lastHalfOfCourtCollided +
-                    '\nlast player collided: ' + this.lastPlayerCollided);
     }
 
     /**

@@ -103,6 +103,13 @@ export default class Scene extends THREE.Scene {
             }
         );
         this.world.addContactMaterial(this.ballRacket2Material);
+
+        /**
+         * Listener owned by the ball's body in order to detect collisions and handle scoring.
+         * As the listener is owned by the body, inside of the this.handleCollision method, this
+         * isn't translated by the Scene class; it's translated by "ball.body".
+         */
+        this.ball.body.addEventListener("collide", this.handleCollision);
     }
 
     /**
@@ -127,6 +134,54 @@ export default class Scene extends THREE.Scene {
         this.ballIndicator.position.set(this.ball.mesh.position.x,0,this.ball.mesh.position.z);
         this.racket1.updateMeshPosition();
         this.racket2.updateMeshPosition();
+    }
+
+    /**
+     * This method checks every collision with every body on the world.
+     * It always has to check if a point has been scored by any player.
+     * 
+     * --- RULES ABOUT SCORING ---
+     * 
+     * P1 loses a point if:
+     *      - P2 hits the ball, the ball bounces in P1's half of the
+     *        court and the play ends.
+     *      - P1 hits the ball, and then the ball bounces in P1's
+     *        half of the court.
+     *      - P1 hits the ball and it goes directly out of the court.
+     * 
+     * A play ends when the ball bounces twice with no player strikes in
+     * between (that's why we keep a "numBounces" variable equal to 0, and
+     * it's incremented in every bounce); or when it goes out of the court.
+     */
+    handleCollision(collision) {
+        switch (collision.body.id) {
+            case Config.bodyIDs.courtID:
+                if (this.position.z > 0)
+                    this.lastHalfOfCourtCollided = "2";
+                else //this.body.position.z < 0
+                    this.lastHalfOfCourtCollided = "1";
+                this.ball.numBounces++;
+                break;
+            case Config.bodyIDs.netID:
+                break;
+            case Config.bodyIDs.racketP1ID:
+                this.lastPlayerCollided = "1";
+                break;
+            case Config.bodyIDs.racketP2ID:
+                this.lastPlayerCollided = "2";
+                break;
+            default:
+                break;
+        }
+        // @TODO: conditions when this.endedPlay() should be called
+    }
+
+    /**
+     * This method is called when a play, handled by this.handleCollision(), ends.
+     * It's responsible of adding points to the players who score them.
+     */
+    endedPlay(){
+        this.ball.numBounces = 0;
     }
 
     /**
