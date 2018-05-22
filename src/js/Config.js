@@ -54,21 +54,30 @@ export default {
             "bounceRestitution" : 1.0
         }
     },
-    "playerOnekeys" : {
-        "up" : "KeyW",
-        "down" : "KeyS",
-        "left" : "KeyA",
-        "right" : "KeyD",
-        "rotationLeft" : "KeyC",
-        "rotationRight" : "KeyV"
+    "playerOne" : {
+        "playerOneLabel" : 1,
+        "playerOneToken" : 1,
+        "playerOneKeys" : {
+            "up" : "KeyW",
+            "down" : "KeyS",
+            "left" : "KeyA",
+            "right" : "KeyD",
+            "rotationLeft" : "KeyC",
+            "rotationRight" : "KeyV"
+        },
     },
-    "playerTwokeys" : {
-        "up" : "ArrowDown",
-        "down" : "ArrowUp",
-        "left" : "ArrowRight",
-        "right" : "ArrowLeft",
-        "rotationLeft" : "KeyK",
-        "rotationRight" : "KeyL"
+
+    "playerTwo" : {
+        "playerTwoLabel" : 2,
+        "playerTwoToken" : -1,
+        "playerTwoKeys": {
+            "up": "ArrowDown",
+            "down": "ArrowUp",
+            "left": "ArrowRight",
+            "right": "ArrowLeft",
+            "rotationLeft": "KeyK",
+            "rotationRight": "KeyL"
+        },
     },
     "bodyIDs" : {
         "courtID": 0,

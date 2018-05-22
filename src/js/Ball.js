@@ -42,6 +42,7 @@ export default class Ball extends THREE.Object3D {
         this.body.addShape(this.sphereShape);
         this.body.position.set(0, Config.ball.bounceHeight, -100);
         this.body.velocity.set(0,0,150);
+        this.body.numBounces = 0;
         Config.bodyIDs.ballID = this.body.id;
     }
 
@@ -70,9 +71,8 @@ export default class Ball extends THREE.Object3D {
         this.mesh.quaternion.copy(this.body.quaternion);
 
         // temporary trial - just places the ball in a playable position
-        if(this.body.position.y <= -50){
-            this.setPosition(0, Config.ball.bounceHeight, -100);
-            this.body.velocity.set(0,0,150);
-        }
+        if(this.body.position.y <= -50)
+            this.body.numBounces++;
+
     }
 }

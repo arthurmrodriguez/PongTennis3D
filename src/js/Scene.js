@@ -58,18 +58,21 @@ export default class Scene extends THREE.Scene {
 
         // Trial rackets
         this.racket1 = new Racket(Config.racket.color1,false);
-        this.racket1.setControls(Config.playerOnekeys);
+        this.racket1.setControls(Config.playerOne.playerOneKeys);
         this.racket1.setPosition(0,this.racket1.height/2,-this.court.depth/2);
         this.add(this.racket1);
         this.world.addBody(this.racket1.body);
         Config.bodyIDs.racketP1ID = this.racket1.body.id;
-        
+
         this.racket2 = new Racket(Config.racket.color2,true);
         this.racket2.setPosition(0, this.racket2.height/2,this.court.depth/2);
-        this.racket2.setControls(Config.playerTwokeys);
+        this.racket2.setControls(Config.playerTwo.playerTwoKeys);
         this.add(this.racket2);
         this.world.addBody(this.racket2.body);
         Config.bodyIDs.racketP2ID = this.racket2.body.id;
+
+        // Player stuff
+        this.lastPlayerCollided = this.lastHalfOfCourtCollided = Config.playerOne.playerOneLabel;
 
         // Collisions work correctly without contact materials, but there aren't any bounces.
         // Contact material between the ball and the ground
@@ -109,7 +112,54 @@ export default class Scene extends THREE.Scene {
          * As the listener is owned by the body, inside of the this.handleCollision method, this
          * isn't translated by the Scene class; it's translated by "ball.body".
          */
-        this.ball.body.addEventListener("collide", this.handleCollision);
+        var self = this;
+
+        /**
+         * This method checks every collision with every body on the world.
+         * It always has to check if a point has been scored by any player.
+         *
+         * --- RULES ABOUT SCORING ---
+         *
+         * P1 loses a point if:
+         *      1 - P2 hits the ball, the ball bounces in P1's half of the
+         *        court and the play ends.
+         *      2 - P1 hits the ball, and then the ball bounces in P1's
+         *        half of the court.
+         *      3 - P1 hits the ball and it goes directly out of the court.
+         *
+         * A play ends when the ball bounces twice with no player strikes in
+         * between (that's why we keep a "numBounces" variable equal to 0, and
+         * it's incremented in every bounce); or when it goes out of the court.
+         */
+        this.ball.body.addEventListener("collide", function(collision){
+
+            // Every time the ball collides with a racket, the numBounces of
+            // the ball is set to 0. When the ball goes out of the court, numBounces
+            // is incremented in 1 (this is done inside Ball's object)
+            switch (collision.body.id) {
+                case Config.bodyIDs.courtID:
+                    if (this.position.z > 0)
+                        self.lastHalfOfCourtCollided = Config.playerTwo.playerTwoLabel;
+                    else //this.body.position.z < 0
+                        self.lastHalfOfCourtCollided = Config.playerOne.playerOneLabel;
+                    this.numBounces++;
+                    break;
+                case Config.bodyIDs.netID:
+                    break;
+                case Config.bodyIDs.racketP1ID:
+                    self.lastPlayerCollided = Config.playerOne.playerOneLabel;
+                    this.numBounces = 0;
+                    break;
+                case Config.bodyIDs.racketP2ID:
+                    self.lastPlayerCollided = Config.playerTwo.playerTwoLabel;
+                    this.numBounces = 0;
+                    break;
+                default:
+                    break;
+            }
+
+        });
+
     }
 
     /**
@@ -123,6 +173,25 @@ export default class Scene extends THREE.Scene {
         this.world.solver.tolerance = 0;
     }
 
+    checkSetState(){
+        // @TODO: conditions when this.endedPlay() should be called
+        // This first condition covers the aforementioned conditions 2 and 3,
+        // that is, when the ball is hit by P1 and either bounces inside P1 court or
+        // goes out of the court
+        if(this.ball.body.numBounces == 1){
+            if(this.lastHalfOfCourtCollided === this.lastPlayerCollided){
+                var winner = this.lastPlayerCollided === Config.playerOne.playerOneLabel ?
+                    Config.playerTwo.playerTwoLabel : Config.playerOne.playerOneLabel;
+                this.endedPlay(winner);
+            }
+        }
+        // If it reaches a count of more than 2 bounces, the last player who
+        // hit the ball is the winner
+        else if(this.ball.body.numBounces >= 2){
+            this.endedPlay(this.lastPlayerCollided);
+        }
+    }
+
     /**
      * 
      */
@@ -134,54 +203,22 @@ export default class Scene extends THREE.Scene {
         this.ballIndicator.position.set(this.ball.mesh.position.x,0,this.ball.mesh.position.z);
         this.racket1.updateMeshPosition();
         this.racket2.updateMeshPosition();
+        this.checkSetState();
     }
 
-    /**
-     * This method checks every collision with every body on the world.
-     * It always has to check if a point has been scored by any player.
-     * 
-     * --- RULES ABOUT SCORING ---
-     * 
-     * P1 loses a point if:
-     *      - P2 hits the ball, the ball bounces in P1's half of the
-     *        court and the play ends.
-     *      - P1 hits the ball, and then the ball bounces in P1's
-     *        half of the court.
-     *      - P1 hits the ball and it goes directly out of the court.
-     * 
-     * A play ends when the ball bounces twice with no player strikes in
-     * between (that's why we keep a "numBounces" variable equal to 0, and
-     * it's incremented in every bounce); or when it goes out of the court.
-     */
-    handleCollision(collision) {
-        switch (collision.body.id) {
-            case Config.bodyIDs.courtID:
-                if (this.position.z > 0)
-                    this.lastHalfOfCourtCollided = "2";
-                else //this.body.position.z < 0
-                    this.lastHalfOfCourtCollided = "1";
-                this.ball.numBounces++;
-                break;
-            case Config.bodyIDs.netID:
-                break;
-            case Config.bodyIDs.racketP1ID:
-                this.lastPlayerCollided = "1";
-                break;
-            case Config.bodyIDs.racketP2ID:
-                this.lastPlayerCollided = "2";
-                break;
-            default:
-                break;
-        }
-        // @TODO: conditions when this.endedPlay() should be called
-    }
 
     /**
      * This method is called when a play, handled by this.handleCollision(), ends.
      * It's responsible of adding points to the players who score them.
      */
-    endedPlay(){
-        this.ball.numBounces = 0;
+    endedPlay(winner){
+        console.log("HA GANADO EL JUGADOR " + winner);
+        this.lastPlayerCollided = winner;
+        var token = this.lastPlayerCollided == Config.playerOne.playerOneToken ?
+            Config.playerOne.playerOneToken : Config.playerTwo.playerTwoToken;
+        this.ball.body.numBounces = 0;
+        this.ball.setPosition(0, Config.ball.bounceHeight, -100*token);
+        this.ball.body.velocity.set(0,0,150*token);
     }
 
     /**
