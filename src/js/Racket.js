@@ -64,7 +64,7 @@ export default class Racket extends THREE.Object3D {
 
 
     /**
-     * 
+     * It's used to configure the keys for moving the player
      * @param {keys} keys 
      */
     setControls(keys){
@@ -81,7 +81,6 @@ export default class Racket extends THREE.Object3D {
      * It copies the body's position into the THREE mesh
      */
     updateMeshPosition(){
-
         if(this.movingForward)
             this.mesh.position.z += this.stepSize;
         if(this.movingBackwards)
@@ -91,20 +90,16 @@ export default class Racket extends THREE.Object3D {
         if(this.movingRight)
             this.mesh.position.x -= this.stepSize;
 
-        if(this.rotatingLeft){
-            if (this.mesh.rotation.y <= Config.racket.maxRotation) {
+        if(this.rotatingLeft)
+            if (this.mesh.rotation.y <= Config.racket.maxRotation)
                 this.mesh.rotateY(0.05);
-            }
-        }
-        else if(this.rotatingRight){ // releasing strike to the ball
-            if (this.mesh.rotation.y >= -Config.racket.maxRotation) {
+        else if(this.rotatingRight) // releasing strike to the ball
+            if (this.mesh.rotation.y >= -Config.racket.maxRotation)
                 this.mesh.rotateY(-0.05);
-            }
 
-        }
         this.body.quaternion.copy(this.mesh.quaternion);
         this.body.position.copy(this.mesh.position);
-        this.body.position.z = this.opposite?  this.body.position.z + (this.depth*5) :
+        this.body.position.z = this.opposite ? this.body.position.z + (this.depth*5) :
             this.body.position.z - (this.depth*5);
     }
 
