@@ -104,8 +104,8 @@ function updateCameras(){
     renderer.setScissor(left, bottom, width, height);
     renderer.setScissorTest(true);
     playerTwoCamera.aspect = width / height;
-    renderer.render(scene, playerTwoCamera);
     playerTwoCamera.updateProjectionMatrix();
+    renderer.render(scene, playerTwoCamera);
 }
 
 /**
@@ -139,6 +139,14 @@ function linkHTMLDependencies() {
     var link = document.createElement('link');
     link.rel = 'stylesheet';
     link.href = 'https://fonts.googleapis.com/css?family=East+Sea+Dokdo';
+    head.appendChild(link);
+
+    // Links to external icons
+    link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = 'https://use.fontawesome.com/releases/v5.0.13/css/all.css';
+    link.integrity = 'sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp';
+    link.crossOrigin = 'anonymous';
     head.appendChild(link);
 }
 
@@ -177,12 +185,12 @@ function createUIElements() {
     player1helper.style.left = '0';
     player1helper.style.width = '20%';
     player1helper.style.height = '7%';
-    player1helper.style.borderBottom = '4px solid blue';
     player1helper.style.borderBottomRightRadius = '45%';
+    player1helper.style.borderBottom = '3px solid ' + Config.racket.color1;
     player1helper.style.textAlign = 'center';
     player1helper.style.fontSize = '36px';
     player1helper.style.fontFamily = 'East Sea Dokdo, cursive';
-    player1helper.style.backgroundColor = 'rgba(20, 20, 20, 0.8)';
+    player1helper.style.backgroundColor = 'rgba(20, 20, 20, 0.5)';
     var player1helperText = document.createTextNode('W,A,S,D');
     player1helper.appendChild(player1helperText);
     document.body.appendChild(player1helper);
@@ -195,15 +203,19 @@ function createUIElements() {
     player2helper.style.right = '0';
     player2helper.style.width = '20%';
     player2helper.style.height = '7%';
-    player2helper.style.borderBottom = '4px solid yellow';
     player2helper.style.borderBottomLeftRadius = '45%';
+    player2helper.style.borderBottom = '3px solid ' + Config.racket.color2;
     player2helper.style.textAlign = 'center';
     player2helper.style.fontSize = '36px';
     player2helper.style.fontFamily = 'East Sea Dokdo, cursive';
-    player2helper.style.backgroundColor = 'rgba(20, 20, 20, 0.8)';
+    player2helper.style.backgroundColor = 'rgba(20, 20, 20, 0.5)';
     var player2helperText = document.createTextNode('Arrow keys');
     player2helper.appendChild(player2helperText);
     document.body.appendChild(player2helper);
+}
+
+function createPlayerHelper(){
+
 }
 
 // When ready, load these things

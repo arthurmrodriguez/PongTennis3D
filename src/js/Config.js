@@ -3,8 +3,8 @@ export default {
         "width" : 140,
         "height" : 100,
         "depth" : 10,
-        "color1" : 0x6dc0cc,
-        "color2" : 0xaaaa33,
+        "color1" : '#e91e63',
+        "color2" : '#2196f3',
         "mass" : 5,
         "restitution" : 1.01,
         "stepSize" : 8,
@@ -15,19 +15,19 @@ export default {
         "width" : 1000,
         "height" : 1,
         "depth" : 1800,
-        "color" : 0x6dc066,
+        "color" : '#6dc066',
         "mass" : 0,
         "restitution" : 0.99
     },
     "net" : {
         "height" : 40,
         "depth" : 0.25,
-        "color" : 0xffffff,
+        "color" : '#ffffff',
         "mass" : 0
     },
     "ball" : {
         "radius" : 12,
-        "color" : 0xffff00,
+        "color" : '#ffff00',
         "mass" : 5,
         "numSegments" : 16,
         "bounceHeight" : 200
@@ -41,11 +41,11 @@ export default {
             }
         },
         "ambientLight" : {
-            "color" : 0xffffff,
+            "color" : '#ffffff',
             "intensity" : 0.5
         },
         "spotLight" : {
-            "color" : 0xffffff,
+            "color" : '#ffffff',
             "intensity" : 0.8,
             "angle" : 1.3,
             "penumbra" : 1,
