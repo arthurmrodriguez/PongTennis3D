@@ -25,9 +25,11 @@ function createRenderer(){
     renderer.setClearColor(new THREE.Color(0xe6e6fa), 1); // Background color
     renderer.setSize( window.innerWidth, window.innerHeight);
     renderer.shadowMap.enabled = true;
+
+    // Dispose renderer on web viewport
     document.body.style.margin = '0';
     document.body.style.overflow = 'hidden';
-    document.body.appendChild( renderer.domElement );
+    document.body.appendChild(renderer.domElement);
 }
 
 /**
@@ -59,9 +61,12 @@ function init(){
     // If necessary, we can preview the CANNON meshes
     //debugRenderer = new THREE.CannonDebugRenderer(scene, scene.world);
 
+    // Dispose scoreboard and keys helpers
+    createUIElements();
+    
     // Views
     createCameras();
-
+    
     // The renderer
     createRenderer();
 }
@@ -104,6 +109,7 @@ function updateCameras(){
     playerOneCamera.updateProjectionMatrix();
     renderer.render(scene, playerOneCamera);
     playerOneControls.update();
+    //console.log('CAMERA 1: ' + playerOneCamera.position.x + playerOneCamera.position.y + playerOneCamera.position.z);
 
     left = 1; bottom = 1; width = 0.5 * window.innerWidth - 2; height = window.innerHeight - 2;
     renderer.setViewport(left, bottom, width, height);
@@ -135,6 +141,82 @@ function computeKeyDown(event) {
  */
 function computeKeyUp(event) {
     scene.computeKeyUp(event);
+}
+
+/**
+ * 
+ */
+function linkHTMLDependencies() {
+    // Links to external font
+    var head = document.getElementsByTagName('head')[0];
+    var link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = 'https://fonts.googleapis.com/css?family=East+Sea+Dokdo';
+    head.appendChild(link);
+}
+
+/**
+ * 
+ */
+function createUIElements() {
+    // Link needed external dependencies (fonts, etc.)
+    linkHTMLDependencies();
+
+    // Create scoreboard
+    var scoreboard = document.createElement('div');
+    scoreboard.setAttribute('id', 'scoreboard');
+    scoreboard.style.color = 'white';
+    scoreboard.style.position = 'absolute';
+    scoreboard.style.left = '40%';
+    scoreboard.style.width = '20%';
+    scoreboard.style.height = '7%';
+    scoreboard.style.borderBottom = '6px solid green';
+    scoreboard.style.borderBottomLeftRadius = '45%';
+    scoreboard.style.borderBottomRightRadius = '45%';
+    scoreboard.style.textAlign = 'center';
+    scoreboard.style.fontSize = '54px';
+    scoreboard.style.fontFamily = 'East Sea Dokdo, cursive';
+    scoreboard.style.backgroundColor = 'rgba(20, 20, 20, 0.8)';
+    var scoreText = document.createTextNode('0 - 0');
+    scoreboard.appendChild(scoreText);
+    document.body.appendChild(scoreboard);
+
+    // Create controls' helper
+    // Player 1
+    var player1helper = document.createElement('div');
+    player1helper.setAttribute('id', 'player1helper');
+    player1helper.style.color = 'white';
+    player1helper.style.position = 'absolute';
+    player1helper.style.left = '0';
+    player1helper.style.width = '20%';
+    player1helper.style.height = '7%';
+    player1helper.style.borderBottom = '4px solid blue';
+    player1helper.style.borderBottomRightRadius = '45%';
+    player1helper.style.textAlign = 'center';
+    player1helper.style.fontSize = '36px';
+    player1helper.style.fontFamily = 'East Sea Dokdo, cursive';
+    player1helper.style.backgroundColor = 'rgba(20, 20, 20, 0.8)';
+    var player1helperText = document.createTextNode('W,A,S,D');
+    player1helper.appendChild(player1helperText);
+    document.body.appendChild(player1helper);
+
+    // Player 2
+    var player2helper = document.createElement('div');
+    player2helper.setAttribute('id', 'player2helper');
+    player2helper.style.color = 'white';
+    player2helper.style.position = 'absolute';
+    player2helper.style.right = '0';
+    player2helper.style.width = '20%';
+    player2helper.style.height = '7%';
+    player2helper.style.borderBottom = '4px solid yellow';
+    player2helper.style.borderBottomLeftRadius = '45%';
+    player2helper.style.textAlign = 'center';
+    player2helper.style.fontSize = '36px';
+    player2helper.style.fontFamily = 'East Sea Dokdo, cursive';
+    player2helper.style.backgroundColor = 'rgba(20, 20, 20, 0.8)';
+    var player2helperText = document.createTextNode('Arrow keys');
+    player2helper.appendChild(player2helperText);
+    document.body.appendChild(player2helper);
 }
 
 // When ready, load these things

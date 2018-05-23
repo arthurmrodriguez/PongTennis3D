@@ -175,6 +175,9 @@ export default class Scene extends THREE.Scene {
         this.world.solver.tolerance = 0;
     }
 
+    /**
+     * 
+     */
     checkSetState(){
         // This first condition covers the aforementioned conditions 2 and 3,
         // that is, when the ball is hit by P1 and either bounces inside P1 court or
@@ -246,24 +249,20 @@ export default class Scene extends THREE.Scene {
             }
         }
 
-
-        this.showScore();
+        this.updateScore();
         this.ball.body.numBounces = 0;
         this.ball.setPosition(0, Config.ball.bounceHeight, -100*token);
         this.ball.body.velocity.set(0,0,150*token);
-
     }
 
-    showScore(){
-
-        console.log("-----------PUNTUACION-----------");
-        console.log("Player ONE : SETS " + this.playerOne.currentSets +
-                                " POINTS " + this.playerOne.currentPoints +
-                                " ADVANTAGE " + this.playerOne.advantage);
-
-        console.log("Player TWO : SETS " + this.playerTwo.currentSets +
-                                " POINTS " + this.playerTwo.currentPoints +
-                                " ADVANTAGE " + this.playerTwo.advantage);
+    /**
+     * 
+     */
+    updateScore(){
+        var textoP1, textoP2;
+        textoP1 = (this.playerOne.currentPoints == 40 && this.playerOne.advantage >= 1) ? 'A' : this.playerOne.currentPoints;
+        textoP2 = (this.playerTwo.currentPoints == 40 && this.playerTwo.advantage >= 1) ? 'A' : this.playerTwo.currentPoints;
+        document.getElementById('scoreboard').innerText = (textoP1 + ' - ' + textoP2);
     }
 
     /**
