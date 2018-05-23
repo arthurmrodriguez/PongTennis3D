@@ -2,12 +2,12 @@ export default {
     "racket" : {
         "width" : 140,
         "height" : 100,
-        "depth" : 20,
+        "depth" : 10,
         "color1" : 0x6dc0cc,
         "color2" : 0xaaaa33,
         "mass" : 5,
         "restitution" : 1.01,
-        "stepSize" : 6,
+        "stepSize" : 8,
         "rotationStep" : 0.2,
         "maxRotation" : 0.1
     },
@@ -83,7 +83,7 @@ export default {
         "courtID": 0,
         "netID": 0,
         "ballID" : 0,
-        "racketP1ID" : 0,
-        "racketP2ID" : 0
+        "player1ID" : 0,
+        "player2ID" : 0
     }
 }

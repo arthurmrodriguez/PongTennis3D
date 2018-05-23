@@ -69,10 +69,5 @@ export default class Ball extends THREE.Object3D {
         // Copy coordinates from Cannon.js world to Three.js'
         this.mesh.position.copy(this.body.position);
         this.mesh.quaternion.copy(this.body.quaternion);
-
-        // temporary trial - just places the ball in a playable position
-        if(this.body.position.y <= -50)
-            this.body.numBounces++;
-
     }
 }

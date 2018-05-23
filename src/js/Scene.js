@@ -5,6 +5,7 @@ import Ball from './Ball';
 import SpotLight from './Light';
 import Racket from './Racket';
 import Config from './Config';
+import Player from "./Player";
 
 export default class Scene extends THREE.Scene {
 
@@ -26,7 +27,7 @@ export default class Scene extends THREE.Scene {
         this.gravity = Config.scenario.physics.gravity;
 
         // Time of step in CANNON's world. Equal to a maximum of 60 FPS
-        this.timeStep = 1 / 45;
+        this.timeStep = 1 / 30;
 
         // Init cannon world
         this.initCannon();
@@ -53,26 +54,28 @@ export default class Scene extends THREE.Scene {
         this.add(this.ball);
         this.world.addBody(this.ball.body);
 
+        // Ball indicator to see ball position over court
         this.ballIndicator = new Ball();
         this.add(this.ballIndicator);
 
-        // Trial rackets
-        this.racket1 = new Racket(Config.racket.color1,false);
-        this.racket1.setControls(Config.playerOne.playerOneKeys);
-        this.racket1.setPosition(0,this.racket1.height/2,-this.court.depth/2);
-        this.add(this.racket1);
-        this.world.addBody(this.racket1.body);
-        Config.bodyIDs.racketP1ID = this.racket1.body.id;
+        // Player is a wrapper for a racket and points
+        // Player One
+        this.playerOne = new Player("PlayerOne",Config.racket.color1,false,Config.playerOne.playerOneKeys);
+        this.playerOne.setPosition(0,this.playerOne.racket.height/2,-this.court.depth/2);
+        this.add(this.playerOne);
+        this.world.addBody(this.playerOne.getBody());
+        Config.bodyIDs.player1ID = this.playerOne.getBody().id;
 
-        this.racket2 = new Racket(Config.racket.color2,true);
-        this.racket2.setPosition(0, this.racket2.height/2,this.court.depth/2);
-        this.racket2.setControls(Config.playerTwo.playerTwoKeys);
-        this.add(this.racket2);
-        this.world.addBody(this.racket2.body);
-        Config.bodyIDs.racketP2ID = this.racket2.body.id;
+        // Player Two
+        this.playerTwo = new Player("PlayerTwo",Config.racket.color2,true,Config.playerTwo.playerTwoKeys);
+        this.playerTwo.setPosition(0,this.playerTwo.racket.height/2,this.court.depth/2);
+        this.add(this.playerTwo);
+        this.world.addBody(this.playerTwo.getBody());
+        Config.bodyIDs.player2ID = this.playerTwo.getBody().id;
 
         // Player stuff
         this.lastPlayerCollided = this.lastHalfOfCourtCollided = Config.playerOne.playerOneLabel;
+        this.deuce = false;
 
         // Collisions work correctly without contact materials, but there aren't any bounces.
         // Contact material between the ball and the ground
@@ -86,23 +89,23 @@ export default class Scene extends THREE.Scene {
         );
         this.world.addContactMaterial(this.ballGroundMaterial);
 
-        // Contact material between the ball and a racket
+        // Contact material between the ball and the racket of PlayerOne
         this.ballRacket1Material = new CANNON.ContactMaterial(
             this.ball.contactMaterial,
-            this.racket1.contactMaterial,
+            this.playerOne.getContactMaterial(),
             {
                 friction: 0.0,
-                restitution: this.racket1.restitution
+                restitution: this.playerOne.racket.restitution
             }
         );
         this.world.addContactMaterial(this.ballRacket1Material);
 
         this.ballRacket2Material = new CANNON.ContactMaterial(
             this.ball.contactMaterial,
-            this.racket2.contactMaterial,
+            this.playerTwo.getContactMaterial(),
             {
                 friction: 0.0,
-                restitution: this.racket2.restitution
+                restitution: this.playerTwo.racket.restitution
             }
         );
         this.world.addContactMaterial(this.ballRacket2Material);
@@ -143,23 +146,22 @@ export default class Scene extends THREE.Scene {
                     else //this.body.position.z < 0
                         self.lastHalfOfCourtCollided = Config.playerOne.playerOneLabel;
                     this.numBounces++;
+                    self.checkSetState();
                     break;
                 case Config.bodyIDs.netID:
                     break;
-                case Config.bodyIDs.racketP1ID:
+                case Config.bodyIDs.player1ID:
                     self.lastPlayerCollided = Config.playerOne.playerOneLabel;
                     this.numBounces = 0;
                     break;
-                case Config.bodyIDs.racketP2ID:
+                case Config.bodyIDs.player2ID:
                     self.lastPlayerCollided = Config.playerTwo.playerTwoLabel;
                     this.numBounces = 0;
                     break;
                 default:
                     break;
             }
-
         });
-
     }
 
     /**
@@ -174,13 +176,12 @@ export default class Scene extends THREE.Scene {
     }
 
     checkSetState(){
-        // @TODO: conditions when this.endedPlay() should be called
         // This first condition covers the aforementioned conditions 2 and 3,
         // that is, when the ball is hit by P1 and either bounces inside P1 court or
         // goes out of the court
         if(this.ball.body.numBounces == 1){
-            if(this.lastHalfOfCourtCollided === this.lastPlayerCollided){
-                var winner = this.lastPlayerCollided === Config.playerOne.playerOneLabel ?
+            if(this.lastHalfOfCourtCollided == this.lastPlayerCollided){
+                var winner = this.lastPlayerCollided == Config.playerOne.playerOneLabel ?
                     Config.playerTwo.playerTwoLabel : Config.playerOne.playerOneLabel;
                 this.endedPlay(winner);
             }
@@ -192,8 +193,81 @@ export default class Scene extends THREE.Scene {
         }
     }
 
+
     /**
-     * 
+     * This method is called when a play ends.
+     * It's responsible of adding points to the players who score them.
+     * @param winner Player ID who has won the current play.
+     */
+    endedPlay(winner){
+
+        // Update of the values
+        this.lastPlayerCollided = winner;
+        var token = this.lastPlayerCollided == Config.playerOne.playerOneToken ?
+            Config.playerOne.playerOneToken : Config.playerTwo.playerTwoToken;
+
+        // Update score
+        this.lastPlayerCollided === Config.playerOne.playerOneLabel ? this.playerOne.incrementScore() :
+            this.playerTwo.incrementScore();
+
+        // After score update, we check if there's a deuce: both players with
+        // 40 points and no one with advantage
+        if(this.playerOne.currentPoints == this.playerTwo.currentPoints)
+            this.deuce = true;
+        else
+            this.deuce = false;
+
+        // When there's a deuce we have to check if any player was reached
+        // an advantage of two over the other
+        if(this.deuce){
+            // Check if somebody has got advantage of more two points
+            if(Math.abs(this.playerOne.advantage - this.playerTwo.advantage) == 2) {
+                if (this.playerOne.advantage > this.playerTwo.advantage) {
+                    this.playerOne.incrementSets();
+                    this.playerTwo.resetCurrentPoints();
+                }
+                else {
+                    this.playerTwo.incrementSets();
+                    this.playerOne.resetCurrentPoints();
+                }
+            }
+        }
+
+        // If there's no deuce, we check if any player has reached the winning score
+        // which is 40 points and a advantage
+        else {
+            if(this.playerOne.currentPoints == 40 && this.playerOne.advantage >= 1) {
+                this.playerOne.incrementSets();
+                this.playerTwo.resetCurrentPoints();
+            }
+            else if(this.playerTwo.currentPoints == 40 && this.playerTwo.advantage >= 1) {
+                this.playerTwo.incrementSets();
+                this.playerOne.resetCurrentPoints();
+            }
+        }
+
+
+        this.showScore();
+        this.ball.body.numBounces = 0;
+        this.ball.setPosition(0, Config.ball.bounceHeight, -100*token);
+        this.ball.body.velocity.set(0,0,150*token);
+
+    }
+
+    showScore(){
+
+        console.log("-----------PUNTUACION-----------");
+        console.log("Player ONE : SETS " + this.playerOne.currentSets +
+                                " POINTS " + this.playerOne.currentPoints +
+                                " ADVANTAGE " + this.playerOne.advantage);
+
+        console.log("Player TWO : SETS " + this.playerTwo.currentSets +
+                                " POINTS " + this.playerTwo.currentPoints +
+                                " ADVANTAGE " + this.playerTwo.advantage);
+    }
+
+    /**
+     *
      */
     updateMeshPosition() {
         // Step the physics world
@@ -201,39 +275,27 @@ export default class Scene extends THREE.Scene {
         this.court.updateMeshPosition();
         this.ball.updateMeshPosition();
         this.ballIndicator.position.set(this.ball.mesh.position.x,0,this.ball.mesh.position.z);
-        this.racket1.updateMeshPosition();
-        this.racket2.updateMeshPosition();
-        this.checkSetState();
-    }
-
-
-    /**
-     * This method is called when a play, handled by this.handleCollision(), ends.
-     * It's responsible of adding points to the players who score them.
-     */
-    endedPlay(winner){
-        console.log("HA GANADO EL JUGADOR " + winner);
-        this.lastPlayerCollided = winner;
-        var token = this.lastPlayerCollided == Config.playerOne.playerOneToken ?
-            Config.playerOne.playerOneToken : Config.playerTwo.playerTwoToken;
-        this.ball.body.numBounces = 0;
-        this.ball.setPosition(0, Config.ball.bounceHeight, -100*token);
-        this.ball.body.velocity.set(0,0,150*token);
+        if(this.ball.body.position.y <= -50) {
+            this.ball.body.numBounces++;
+            this.checkSetState();
+        }
+        this.playerOne.updateMeshPosition();
+        this.playerTwo.updateMeshPosition();
     }
 
     /**
      * 
      */
     computeKeyDown(event){
-        this.racket1.computeKeyDown(event);
-        this.racket2.computeKeyDown(event);
+        this.playerOne.computeKeyDown(event);
+        this.playerTwo.computeKeyDown(event);
     }
 
     /**
      * 
      */
     computeKeyUp(event){
-        this.racket1.computeKeyUp(event);
-        this.racket2.computeKeyUp(event);
+        this.playerOne.computeKeyUp(event);
+        this.playerTwo.computeKeyUp(event);
     }
 }

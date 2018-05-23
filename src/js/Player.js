@@ -1,3 +1,4 @@
+import * as THREE from 'three';
 import Racket from './Racket';
 import Config from './Config';
 
@@ -6,23 +7,21 @@ import Config from './Config';
  * Each player has a racket, which he moves with his controls keys,
  * and he counts his points himself.
  */
-export default class Player {
+export default class Player extends THREE.Object3D{
 
-    /**
-     * Class constructor
-     * @param {string} name 
-     * @param {dictionary} keys 
-     */
     constructor(name = "Anonymous", color, opposite, keys){
-        
-        this.color = color;
+        super();
+        // Member data
+        this.name = name;
         this.opposite = opposite;
+        this.color = color;
         this.keys = keys;
-        
         this.racket = new Racket(this.color, this.opposite);
         this.racket.setControls(this.keys);
-        this.points = 0;
-
+        this.currentPoints = 0;
+        this.currentSets = 0;
+        this.advantage = false;
+        this.add(this.racket);
     }
 
     /**
@@ -54,6 +53,46 @@ export default class Player {
      */
     setPosition(x, y, z){
         this.racket.setPosition(x, y, z);
+    }
+
+    /**
+     * Sets the advantage when deuce
+     * @param {int} advantage
+     */
+    setAdvantage(advantage){
+        this.advantage += advantage;
+    }
+
+    incrementScore(){
+
+        // When already has 40 points and scores again
+        // gets an advantage
+        if(this.currentPoints == 40)
+            this.setAdvantage(1);
+
+        // Update score from 15 points
+        if(this.currentPoints <= 30)
+            this.currentPoints += 15;
+
+        // Get score of 40 when 3 plays scored
+        if(this.currentPoints == 45)
+            this.currentPoints = 40;
+    }
+
+    incrementSets(){
+        this.currentSets+=1;
+        this.resetCurrentPoints();
+    }
+
+
+    resetCurrentPoints(){
+        this.currentPoints = 0;
+        this.advantage = 0;
+    }
+
+    resetCurrentSets(){
+        this.currentSets = 0;
+
     }
 
     /**
