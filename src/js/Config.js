@@ -33,6 +33,13 @@ export default {
         "bounceHeight" : 200
     },
     "scenario" : {
+        "camera" : {
+            "position" : {
+                "x" : 0,
+                "y" : 1800,
+                "z" : 2000
+            }
+        },
         "ambientLight" : {
             "color" : 0xffffff,
             "intensity" : 0.5
@@ -66,7 +73,6 @@ export default {
             "rotationRight" : "KeyV"
         },
     },
-
     "playerTwo" : {
         "playerTwoLabel" : 2,
         "playerTwoToken" : -1,

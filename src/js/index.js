@@ -4,14 +4,15 @@ import $ from 'jquery';
 import Scene from './Scene';
 import Player from './Player';
 import Config from './Config';
+import Camera from './Camera';
 import './CannonDebugRenderer';
 
 // Main variables
 var scene, renderer, debugRenderer;
 
 // Two players, two cameras. Trackball Controls to walk around the scene
-var playerOneCamera, playerOneControls;
-var playerTwoCamera, playerTwoControls;
+var playerOneCamera;
+var playerTwoCamera;
 
 // Methods to run on load
 init();
@@ -33,22 +34,11 @@ function createRenderer(){
 }
 
 /**
- * Method to generate the two cameras
+ * Method to generate the two cameras, depending on the player position
  */
 function createCameras(){
-    // Player one - camera
-    playerOneCamera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 10000);
-    playerOneCamera.position.y = Config.court.depth;
-    playerOneCamera.position.z = 3*Config.court.depth/2;
-    playerOneCamera.lookAt(new THREE.Vector3(0, 0, 0));
-    playerOneControls = new TrackballControls(playerOneCamera, renderer);
-
-    // Player two - camera
-    playerTwoCamera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 10000);
-    playerTwoCamera.position.y = Config.court.depth;
-    playerTwoCamera.position.z = -(3*Config.court.depth/2);
-    playerTwoCamera.lookAt(new THREE.Vector3(0, 0, 0));
-    playerTwoControls = new TrackballControls(playerTwoCamera, renderer);
+    playerOneCamera = new Camera();
+    playerTwoCamera = new Camera(true);
 }
 
 /**
@@ -108,8 +98,6 @@ function updateCameras(){
     playerOneCamera.aspect = width / height;
     playerOneCamera.updateProjectionMatrix();
     renderer.render(scene, playerOneCamera);
-    playerOneControls.update();
-    //console.log('CAMERA 1: ' + playerOneCamera.position.x + playerOneCamera.position.y + playerOneCamera.position.z);
 
     left = 1; bottom = 1; width = 0.5 * window.innerWidth - 2; height = window.innerHeight - 2;
     renderer.setViewport(left, bottom, width, height);
@@ -118,7 +106,6 @@ function updateCameras(){
     playerTwoCamera.aspect = width / height;
     renderer.render(scene, playerTwoCamera);
     playerTwoCamera.updateProjectionMatrix();
-    playerTwoControls.update();
 }
 
 /**
