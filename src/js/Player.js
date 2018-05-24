@@ -15,34 +15,103 @@ export default class Player extends THREE.Object3D{
         this.name = name;
         this.opposite = opposite;
         this.color = color;
-        this.keys = keys;
+        this.controls = null;
+        this.setControls(keys)
         this.racket = new Racket(this.color, this.opposite);
-        this.racket.setControls(this.keys);
         this.currentPoints = 0;
         this.currentSets = 0;
+        this.serving = false;
         this.advantage = false;
         this.add(this.racket);
     }
 
     /**
-     * 
+     * It's used to configure the keys for moving the player
+     * @param {keys} keys
      */
-    getMesh(){
-        return this.racket.mesh;
+    setControls(keys){
+        this.controls = keys;
+        this.controls.up = keys.up;
+        this.controls.down = keys.down;
+        this.controls.left = keys.left;
+        this.controls.right = keys.right;
+        this.controls.rotationLeft = keys.rotationLeft;
+        this.controls.rotationRight = keys.rotationRight;
     }
 
     /**
-     * 
+     * Talking about movement, we have to change the CANNON parameters, not the THREE's ones.
+     * The updateMeshPosition method will handle the update of the THREE mesh.
+     * @param {keycode} event
      */
-    getBody(){
-        return this.racket.body;
+    computeKeyDown(event){
+        switch(event.code){
+            // When the player is serving, the Keys for moving
+            // forward and backwards will allow him to Serve
+            case this.controls.up:
+                if(this.serving)
+                    this.serving = false;
+                else
+                    this.racket.movingForward = true;
+                break;
+            case this.controls.down:
+                if(this.serving)
+                    this.serving = false;
+                else
+                    this.racket.movingBackwards = true;
+                break;
+            case this.controls.left:
+                this.racket.movingLeft = true;
+                break;
+            case this.controls.right:
+                this.racket.movingRight = true;
+                break;
+            case this.controls.rotationLeft:
+                this.racket.rotatingLeft = true;
+                this.racket.rotatingRight = false;
+                break;
+            case this.controls.rotationRight:
+                this.racket.rotatingLeft = false;
+                this.racket.rotatingRight = true;
+                break;
+        }
     }
 
     /**
-     * 
+     * Talking about movement, we have to change the CANNON parameters, not the THREE's ones.
+     * The updateMeshPosition method will handle the update of the THREE mesh.
+     * @param {keycode} event
      */
-    getContactMaterial(){
-        return this.racket.contactMaterial;
+    computeKeyUp(event){
+        switch (event.code) {
+            case this.controls.up:
+                this.racket.movingForward = false;
+                break;
+            case this.controls.down:
+                this.racket.movingBackwards = false;
+                break;
+            case this.controls.left:
+                this.racket.movingLeft = false;
+                break;
+            case this.controls.right:
+                this.racket.movingRight = false;
+                break;
+            case this.controls.rotationLeft:
+                this.racket.rotatingLeft = false;
+                this.racket.rotatingRight = false;
+                break;
+            case this.controls.rotationRight:
+                this.racket.rotatingLeft = false;
+                this.racket.rotatingRight = false;
+                break;a
+        }
+    }
+
+    /**
+     *
+     */
+    updateMeshPosition(){
+        this.racket.updateMeshPosition();
     }
 
     /**
@@ -74,7 +143,7 @@ export default class Player extends THREE.Object3D{
         if(this.currentPoints <= 30)
             this.currentPoints += 15;
 
-        // Get score of 40 when 3 plays scored
+        // Get score of 40 after 3 plays scored
         if(this.currentPoints == 45)
             this.currentPoints = 40;
     }
@@ -95,25 +164,28 @@ export default class Player extends THREE.Object3D{
 
     }
 
+
     /**
-     * 
+     *
      */
-    updateMeshPosition(){
-        this.racket.updateMeshPosition();
+    getMesh(){
+        return this.racket.mesh;
     }
 
     /**
-     * 
+     *
      */
-    computeKeyDown(event){
-        this.racket.computeKeyDown(event);
+    getBody(){
+        return this.racket.body;
     }
 
     /**
-     * 
+     *
      */
-    computeKeyUp(event){
-        this.racket.computeKeyUp(event);
+    getContactMaterial(){
+        return this.racket.contactMaterial;
     }
+
+
 
 }

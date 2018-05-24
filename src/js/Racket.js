@@ -64,20 +64,6 @@ export default class Racket extends THREE.Object3D {
 
 
     /**
-     * It's used to configure the keys for moving the player
-     * @param {keys} keys 
-     */
-    setControls(keys){
-        this.controls = keys;
-        this.controls.up = keys.up;
-        this.controls.down = keys.down;
-        this.controls.left = keys.left;
-        this.controls.right = keys.right;
-        this.controls.rotationLeft = keys.rotationLeft;
-        this.controls.rotationRight = keys.rotationRight;
-    }
-
-    /**
      * It copies the body's position into the THREE mesh
      */
     updateMeshPosition(){
@@ -103,63 +89,5 @@ export default class Racket extends THREE.Object3D {
             this.body.position.z - (this.depth*5);
     }
 
-    /**
-     * Talking about movement, we have to change the CANNON parameters, not the THREE's ones.
-     * The updateMeshPosition method will handle the update of the THREE mesh.
-     * @param {keycode} event 
-     */
-    computeKeyDown(event){
-        switch(event.code){
-            case this.controls.up:
-                this.movingForward = true;
-                break;
-            case this.controls.down:
-                this.movingBackwards = true;
-                break;
-            case this.controls.left:
-                this.movingLeft = true;
-                break;
-            case this.controls.right:
-                this.movingRight = true;
-                break;
-            case this.controls.rotationLeft:
-                this.rotatingLeft = true;
-                this.rotatingRight = false;
-                break;
-            case this.controls.rotationRight:
-                this.rotatingLeft = false;
-                this.rotatingRight = true;
-                break;
-        }
-    }
 
-    /**
-     * Talking about movement, we have to change the CANNON parameters, not the THREE's ones.
-     * The updateMeshPosition method will handle the update of the THREE mesh.
-     * @param {keycode} event 
-     */
-    computeKeyUp(event){
-        switch (event.code) {
-            case this.controls.up:
-                this.movingForward = false;
-                break;
-            case this.controls.down:
-                this.movingBackwards = false;
-                break;
-            case this.controls.left:
-                this.movingLeft = false;
-                break;
-            case this.controls.right:
-                this.movingRight = false;
-                break;
-            case this.controls.rotationLeft:
-                this.rotatingLeft = false;
-                this.rotatingRight = false;
-                break;
-            case this.controls.rotationRight:
-                this.rotatingLeft = false;
-                this.rotatingRight = false;
-                break;
-        }
-    }
 }

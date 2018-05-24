@@ -51,6 +51,9 @@ export default class Scene extends THREE.Scene {
 
         // Ball
         this.ball = new Ball();
+        this.ball.setPosition(Config.ball.initialXPos,Config.ball.bounceHeight,-Config.ball.initialZPos);
+        this.ball.setVelocity(0,0,0);
+        this.ball.body.mass = 0;
         this.add(this.ball);
         this.world.addBody(this.ball.body);
 
@@ -73,9 +76,12 @@ export default class Scene extends THREE.Scene {
         this.world.addBody(this.playerTwo.getBody());
         Config.bodyIDs.player2ID = this.playerTwo.getBody().id;
 
-        // Player stuff
+        // Player stuff -------- CHECK THIS
         this.lastPlayerCollided = this.lastHalfOfCourtCollided = Config.playerOne.playerOneLabel;
         this.deuce = false;
+        this.served = false;
+        this.lastPlayerCollided === Config.playerOne.playerOneLabel ?
+            this.playerOne.serving = true : this.playerTwo.serving = true;
 
         // Collisions work correctly without contact materials, but there aren't any bounces.
         // Contact material between the ball and the ground
@@ -115,7 +121,7 @@ export default class Scene extends THREE.Scene {
          * As the listener is owned by the body, inside of the this.handleCollision method, this
          * isn't translated by the Scene class; it's translated by "ball.body".
          */
-        var self = this;
+
 
         /**
          * This method checks every collision with every body on the world.
@@ -134,6 +140,7 @@ export default class Scene extends THREE.Scene {
          * between (that's why we keep a "numBounces" variable equal to 0, and
          * it's incremented in every bounce); or when it goes out of the court.
          */
+        var self = this;
         this.ball.body.addEventListener("collide", function(collision){
 
             // Every time the ball collides with a racket, the numBounces of
@@ -182,9 +189,9 @@ export default class Scene extends THREE.Scene {
         // This first condition covers the aforementioned conditions 2 and 3,
         // that is, when the ball is hit by P1 and either bounces inside P1 court or
         // goes out of the court
-        if(this.ball.body.numBounces == 1){
-            if(this.lastHalfOfCourtCollided == this.lastPlayerCollided){
-                var winner = this.lastPlayerCollided == Config.playerOne.playerOneLabel ?
+        if(this.ball.body.numBounces === 1){
+            if(this.lastHalfOfCourtCollided === this.lastPlayerCollided){
+                var winner = this.lastPlayerCollided === Config.playerOne.playerOneLabel ?
                     Config.playerTwo.playerTwoLabel : Config.playerOne.playerOneLabel;
                 this.endedPlay(winner);
             }
@@ -206,16 +213,14 @@ export default class Scene extends THREE.Scene {
 
         // Update of the values
         this.lastPlayerCollided = winner;
-        var token = this.lastPlayerCollided == Config.playerOne.playerOneToken ?
-            Config.playerOne.playerOneToken : Config.playerTwo.playerTwoToken;
 
-        // Update score
+        // Update score locally to each player
         this.lastPlayerCollided === Config.playerOne.playerOneLabel ? this.playerOne.incrementScore() :
             this.playerTwo.incrementScore();
 
         // After score update, we check if there's a deuce: both players with
         // 40 points and no one with advantage
-        if(this.playerOne.currentPoints == this.playerTwo.currentPoints)
+        if(this.playerOne.currentPoints === this.playerTwo.currentPoints)
             this.deuce = true;
         else
             this.deuce = false;
@@ -224,7 +229,7 @@ export default class Scene extends THREE.Scene {
         // an advantage of two over the other
         if(this.deuce){
             // Check if somebody has got advantage of more two points
-            if(Math.abs(this.playerOne.advantage - this.playerTwo.advantage) == 2) {
+            if(Math.abs(this.playerOne.advantage - this.playerTwo.advantage) === 2) {
                 if (this.playerOne.advantage > this.playerTwo.advantage) {
                     this.playerOne.incrementSets();
                     this.playerTwo.resetCurrentPoints();
@@ -239,20 +244,23 @@ export default class Scene extends THREE.Scene {
         // If there's no deuce, we check if any player has reached the winning score
         // which is 40 points and a advantage
         else {
-            if(this.playerOne.currentPoints == 40 && this.playerOne.advantage >= 1) {
+            if(this.playerOne.currentPoints === 40 && this.playerOne.advantage >= 1) {
                 this.playerOne.incrementSets();
                 this.playerTwo.resetCurrentPoints();
             }
-            else if(this.playerTwo.currentPoints == 40 && this.playerTwo.advantage >= 1) {
+            else if(this.playerTwo.currentPoints === 40 && this.playerTwo.advantage >= 1) {
                 this.playerTwo.incrementSets();
                 this.playerOne.resetCurrentPoints();
             }
         }
 
+        // Update the score on GUI
         this.updateScore();
-        this.ball.body.numBounces = 0;
-        this.ball.setPosition(0, Config.ball.bounceHeight, -100*token);
-        this.ball.body.velocity.set(0,0,150*token);
+        // Now it's time to serve, so the ball will remain
+        // still until the serving player serves
+        this.served = false;
+        this.lastPlayerCollided === Config.playerOne.playerOneToken ?
+            this.playerOne.serving = true : this.playerTwo.serving = true;
     }
 
     /**
@@ -260,8 +268,8 @@ export default class Scene extends THREE.Scene {
      */
     updateScore(){
         var textoP1, textoP2;
-        textoP1 = (this.playerOne.currentPoints == 40 && this.playerOne.advantage >= 1) ? 'A' : this.playerOne.currentPoints;
-        textoP2 = (this.playerTwo.currentPoints == 40 && this.playerTwo.advantage >= 1) ? 'A' : this.playerTwo.currentPoints;
+        textoP1 = (this.playerOne.currentPoints === 40 && this.playerOne.advantage >= 1) ? 'A' : this.playerOne.currentPoints;
+        textoP2 = (this.playerTwo.currentPoints === 40 && this.playerTwo.advantage >= 1) ? 'A' : this.playerTwo.currentPoints;
         document.getElementById('scoreboard').innerText = (textoP1 + ' - ' + textoP2);
     }
 
@@ -272,22 +280,66 @@ export default class Scene extends THREE.Scene {
         // Step the physics world
         this.world.step(this.timeStep);
         this.court.updateMeshPosition();
+        this.playerOne.updateMeshPosition();
+        this.playerTwo.updateMeshPosition();
         this.ball.updateMeshPosition();
         this.ballIndicator.position.set(this.ball.mesh.position.x,0,this.ball.mesh.position.z);
+
         if(this.ball.body.position.y <= -50) {
             this.ball.body.numBounces++;
             this.checkSetState();
         }
-        this.playerOne.updateMeshPosition();
-        this.playerTwo.updateMeshPosition();
+
+        if(!this.served){
+
+            if(this.ball.body.mass != 0){
+                // The ball animation needs to be stopped inside the
+                // animation loop for it not to maintain old values and
+                // update them correctly
+                var token = this.lastPlayerCollided === Config.playerOne.playerOneLabel ?
+                    Config.playerOne.playerOneToken : Config.playerTwo.playerTwoToken;
+                this.ball.setPosition(Config.ball.initialXPos, Config.ball.bounceHeight, -Config.ball.initialZPos*token);
+                this.ball.setVelocity(0,0,0);
+                this.ball.body.mass = 0;
+            }
+
+        }
     }
 
     /**
      * 
      */
     computeKeyDown(event){
+
         this.playerOne.computeKeyDown(event);
         this.playerTwo.computeKeyDown(event);
+
+        // After checking key events, we check
+        // whether the serving player has served
+        if(!this.served){
+
+            if(this.lastPlayerCollided === Config.playerOne.playerOneLabel &&
+                !this.playerOne.serving)
+                this.served = true;
+
+            else if(this.lastPlayerCollided === Config.playerTwo.playerTwoLabel &&
+                !this.playerTwo.serving)
+                this.served = true;
+
+
+            // If the player has served, animation is reset by giving
+            // velocity and mass to the ball
+            if(this.served){
+                this.ball.body.numBounces = 0;
+                var token = this.lastPlayerCollided === Config.playerOne.playerOneLabel ?
+                    Config.playerOne.playerOneToken : Config.playerTwo.playerTwoToken;
+
+                this.ball.setPosition(Config.ball.initialXPos, Config.ball.bounceHeight, -Config.ball.initialZPos*token);
+                this.ball.body.velocity.set(0,0,Config.ball.velocityZ*token);
+                this.ball.body.mass = Config.ball.mass;
+            }
+
+        }
     }
 
     /**

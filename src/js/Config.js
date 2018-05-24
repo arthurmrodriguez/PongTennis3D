@@ -30,7 +30,10 @@ export default {
         "color" : 0xffff00,
         "mass" : 5,
         "numSegments" : 16,
-        "bounceHeight" : 200
+        "bounceHeight" : 200,
+        "initialXPos" : 0,
+        "initialZPos" : 200,
+        "velocityZ" : 150
     },
     "scenario" : {
         "ambientLight" : {

@@ -22,7 +22,6 @@ export default class Ball extends THREE.Object3D {
         // Parameters needed to control the development of the game
         this.lastPlayerCollided = null;
         this.lastHalfOfCourtCollided = null;
-        this.numBounces = 0;
 
         // 1 - THREE object - creates geometry and loads a tennis ball texture
         this.geometry = new THREE.SphereGeometry(this.radius, this.numSegments, this.numSegments);
@@ -36,12 +35,10 @@ export default class Ball extends THREE.Object3D {
         this.sphereShape = new CANNON.Sphere(this.radius);
         this.contactMaterial = new CANNON.Material();
         this.body = new CANNON.Body({
-            mass: this.mass, 
+            mass: this.mass,
             material: this.contactMaterial 
         });
         this.body.addShape(this.sphereShape);
-        this.body.position.set(0, Config.ball.bounceHeight, -100);
-        this.body.velocity.set(0,0,150);
         this.body.numBounces = 0;
         Config.bodyIDs.ballID = this.body.id;
     }
@@ -57,8 +54,12 @@ export default class Ball extends THREE.Object3D {
         this.body.position.x = x;
         this.body.position.y = y;
         this.body.position.z = z;
-        this.body.angularVelocity.set(0, 0, 0);
-        this.body.velocity.set(0, 0, 0);
+    }
+
+    setVelocity(x = 0, y = 0, z = 0) {
+        this.body.velocity.x = x;
+        this.body.velocity.y = y;
+        this.body.velocity.z = z;
     }
 
     /**
