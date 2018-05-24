@@ -11,8 +11,8 @@ import './CannonDebugRenderer';
 var scene, renderer, debugRenderer;
 
 // Two players, two cameras. Trackball Controls to walk around the scene
-var playerOneCamera;
-var playerTwoCamera;
+var playerOneCamera, playerOneControls;
+var playerTwoCamera, playerTwoControls;
 
 // Methods to run on load
 init();
@@ -38,7 +38,9 @@ function createRenderer(){
  */
 function createCameras(){
     playerOneCamera = new Camera();
+    playerOneControls = new TrackballControls(playerOneCamera, renderer);
     playerTwoCamera = new Camera(true);
+    playerTwoControls = new TrackballControls(playerTwoCamera, renderer);
 }
 
 /**
@@ -98,6 +100,7 @@ function updateCameras(){
     playerOneCamera.aspect = width / height;
     playerOneCamera.updateProjectionMatrix();
     renderer.render(scene, playerOneCamera);
+    playerOneControls.update();
 
     left = 1; bottom = 1; width = 0.5 * window.innerWidth - 2; height = window.innerHeight - 2;
     renderer.setViewport(left, bottom, width, height);
@@ -106,6 +109,7 @@ function updateCameras(){
     playerTwoCamera.aspect = width / height;
     playerTwoCamera.updateProjectionMatrix();
     renderer.render(scene, playerTwoCamera);
+    playerTwoControls.update();
 }
 
 /**
@@ -162,9 +166,9 @@ function createUIElements() {
     scoreboard.setAttribute('id', 'scoreboard');
     scoreboard.style.color = 'white';
     scoreboard.style.position = 'absolute';
-    scoreboard.style.left = '40%';
-    scoreboard.style.width = '20%';
-    scoreboard.style.height = '7%';
+    scoreboard.style.left = '37.5%';
+    scoreboard.style.width = '25%';
+    scoreboard.style.height = '12%';
     scoreboard.style.borderBottom = '6px solid green';
     scoreboard.style.borderBottomLeftRadius = '45%';
     scoreboard.style.borderBottomRightRadius = '45%';

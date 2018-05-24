@@ -5,7 +5,7 @@ export default {
         "depth" : 10,
         "color1" : '#e91e63',
         "color2" : '#2196f3',
-        "mass" : 5,
+        "mass" : 0,
         "restitution" : 1.01,
         "stepSize" : 8,
         "rotationStep" : 0.2,
@@ -39,8 +39,8 @@ export default {
         "camera" : {
             "position" : {
                 "x" : 0,
-                "y" : 1800,
-                "z" : 2000
+                "y" : 1500,
+                "z" : 1600
             }
         },
         "ambientLight" : {
