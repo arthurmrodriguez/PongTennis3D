@@ -57,24 +57,19 @@ export default class Scene extends THREE.Scene {
         this.add(this.ball);
         this.world.addBody(this.ball.body);
 
-        // Ball indicator to see ball position over court
-        this.ballIndicator = new Ball();
-        this.add(this.ballIndicator);
-
         // Player is a wrapper for a racket and points
         // Player One
         this.playerOne = new Player("PlayerOne",Config.racket.color1,false,Config.playerOne.playerOneKeys);
-        this.playerOne.setPosition(0,this.playerOne.racket.height/2,-this.court.depth/2);
         this.add(this.playerOne);
         this.world.addBody(this.playerOne.getBody());
         Config.bodyIDs.player1ID = this.playerOne.getBody().id;
 
         // Player Two
         this.playerTwo = new Player("PlayerTwo",Config.racket.color2,true,Config.playerTwo.playerTwoKeys);
-        this.playerTwo.setPosition(0,this.playerTwo.racket.height/2,this.court.depth/2);
         this.add(this.playerTwo);
         this.world.addBody(this.playerTwo.getBody());
         Config.bodyIDs.player2ID = this.playerTwo.getBody().id;
+        this.resetRacketsPosition();
 
         // Player stuff -------- CHECK THIS
         this.lastPlayerCollided = this.lastHalfOfCourtCollided = Config.playerOne.playerOneLabel;
@@ -261,6 +256,9 @@ export default class Scene extends THREE.Scene {
         this.served = false;
         this.lastPlayerCollided === Config.playerOne.playerOneToken ?
             this.playerOne.serving = true : this.playerTwo.serving = true;
+
+        // Restart the position of the rackets
+        this.resetRacketsPosition();
     }
 
     /**
@@ -274,6 +272,14 @@ export default class Scene extends THREE.Scene {
     }
 
     /**
+     * 
+     */
+    resetRacketsPosition(){
+        this.playerOne.setPosition(0, this.playerOne.racket.height, -this.court.depth / 4);
+        this.playerTwo.setPosition(0, this.playerTwo.racket.height, this.court.depth / 4);
+    }
+
+    /**
      *
      */
     updateMeshPosition() {
@@ -283,7 +289,6 @@ export default class Scene extends THREE.Scene {
         this.playerOne.updateMeshPosition();
         this.playerTwo.updateMeshPosition();
         this.ball.updateMeshPosition();
-        this.ballIndicator.position.set(this.ball.mesh.position.x,0,this.ball.mesh.position.z);
 
         if(this.ball.body.position.y <= -50) {
             this.ball.body.numBounces++;
