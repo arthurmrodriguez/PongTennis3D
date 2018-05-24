@@ -67,10 +67,12 @@ export default class Player extends THREE.Object3D{
                 this.racket.movingRight = true;
                 break;
             case this.controls.rotationLeft:
+                console.log("IZQUIERDA");
                 this.racket.rotatingLeft = true;
                 this.racket.rotatingRight = false;
                 break;
             case this.controls.rotationRight:
+                console.log("DERECHAAAAAA");
                 this.racket.rotatingLeft = false;
                 this.racket.rotatingRight = true;
                 break;

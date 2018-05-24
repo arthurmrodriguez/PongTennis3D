@@ -77,12 +77,15 @@ export default class Racket extends THREE.Object3D {
         if(this.movingRight)
             this.mesh.position.x -= this.stepSize;
 
-        if(this.rotatingLeft)
-            if (this.mesh.rotation.y <= Config.racket.maxRotation)
+        if(this.rotatingLeft) {
+            if (this.mesh.rotation.y < Config.racket.maxRotation)
                 this.mesh.rotateY(0.05);
-        else if(this.rotatingRight) // releasing strike to the ball
-            if (this.mesh.rotation.y >= -Config.racket.maxRotation)
+        }
+
+        else if(this.rotatingRight) {
+            if (this.mesh.rotation.y > -Config.racket.maxRotation)
                 this.mesh.rotateY(-0.05);
+        }
 
         this.body.quaternion.copy(this.mesh.quaternion);
         this.body.position.copy(this.mesh.position);
