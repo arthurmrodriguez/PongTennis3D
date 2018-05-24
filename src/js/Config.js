@@ -9,7 +9,7 @@ export default {
         "restitution" : 1.01,
         "stepSize" : 8,
         "rotationStep" : 0.2,
-        "maxRotation" : 0.1
+        "maxRotation" : 0.2
     },
     "court" : {
         "width" : 1000,
@@ -33,7 +33,7 @@ export default {
         "bounceHeight" : 200,
         "initialXPos" : 0,
         "initialZPos" : 200,
-        "velocityZ" : 150
+        "velocity" : 150
     },
     "scenario" : {
         "camera" : {

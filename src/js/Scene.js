@@ -303,10 +303,25 @@ export default class Scene extends THREE.Scene {
                 // update them correctly
                 var token = this.lastPlayerCollided === Config.playerOne.playerOneLabel ?
                     Config.playerOne.playerOneToken : Config.playerTwo.playerTwoToken;
-                this.ball.setPosition(Config.ball.initialXPos, Config.ball.bounceHeight, -Config.ball.initialZPos*token);
+
+                // Set the ball at the same level (X axis) as the racket, which then
+                // will be updated according to orientation of the serving player
+                var servingPlayer = this.lastPlayerCollided === Config.playerOne.playerOneLabel ?
+                    this.playerOne : this.playerTwo;
+                this.ball.setPosition(servingPlayer.getMesh().position.x, Config.ball.bounceHeight, -Config.ball.initialZPos*token);
                 this.ball.setVelocity(0,0,0);
                 this.ball.body.mass = 0;
             }
+
+            // Allows the ball to be positioned in relation to the serving player
+            // position and orientation
+            var token = this.lastPlayerCollided === Config.playerOne.playerOneLabel ?
+                Config.playerOne.playerOneToken : Config.playerTwo.playerTwoToken;
+            var servingPlayer = this.lastPlayerCollided === Config.playerOne.playerOneLabel ?
+                this.playerOne : this.playerTwo;
+
+            this.ball.setPosition(servingPlayer.getMesh().position.x, Config.ball.bounceHeight, -Config.ball.initialZPos*token);
+            this.ball.updateMeshPosition();
 
         }
     }
@@ -331,16 +346,27 @@ export default class Scene extends THREE.Scene {
                 !this.playerTwo.serving)
                 this.served = true;
 
+            // Common variables
+            var token = this.lastPlayerCollided === Config.playerOne.playerOneLabel ?
+                Config.playerOne.playerOneToken : Config.playerTwo.playerTwoToken;
+            var servingPlayer = this.lastPlayerCollided === Config.playerOne.playerOneLabel ?
+                this.playerOne : this.playerTwo;
 
             // If the player has served, animation is reset by giving
             // velocity and mass to the ball
             if(this.served){
-                this.ball.body.numBounces = 0;
-                var token = this.lastPlayerCollided === Config.playerOne.playerOneLabel ?
-                    Config.playerOne.playerOneToken : Config.playerTwo.playerTwoToken;
 
-                this.ball.setPosition(Config.ball.initialXPos, Config.ball.bounceHeight, -Config.ball.initialZPos*token);
-                this.ball.body.velocity.set(0,0,Config.ball.velocityZ*token);
+                this.ball.body.numBounces = 0;
+                this.ball.setPosition(servingPlayer.getMesh().position.x, Config.ball.bounceHeight, -Config.ball.initialZPos*token);
+
+                // Velocity is adjusted according to the players orientation
+                // Orientation
+                var matrix = new THREE.Matrix4();
+                matrix.extractRotation( servingPlayer.getMesh().matrix );
+                var direction = new THREE.Vector3( 0, 0, 1 );
+                direction.applyMatrix4(matrix);
+
+                this.ball.body.velocity.set(Config.ball.velocity*token*direction.x,0,Config.ball.velocity*token*direction.z);
                 this.ball.body.mass = Config.ball.mass;
             }
 

@@ -44,18 +44,18 @@ export default class Player extends THREE.Object3D{
      * The updateMeshPosition method will handle the update of the THREE mesh.
      * @param {keycode} event
      */
-    computeKeyDown(event){
-        switch(event.code){
+    computeKeyDown(event) {
+        switch (event.code) {
             // When the player is serving, the Keys for moving
             // forward and backwards will allow him to Serve
             case this.controls.up:
-                if(this.serving)
+                if (this.serving)
                     this.serving = false;
                 else
                     this.racket.movingForward = true;
                 break;
             case this.controls.down:
-                if(this.serving)
+                if (this.serving)
                     this.serving = false;
                 else
                     this.racket.movingBackwards = true;
@@ -67,16 +67,16 @@ export default class Player extends THREE.Object3D{
                 this.racket.movingRight = true;
                 break;
             case this.controls.rotationLeft:
-                console.log("IZQUIERDA");
                 this.racket.rotatingLeft = true;
                 this.racket.rotatingRight = false;
                 break;
             case this.controls.rotationRight:
-                console.log("DERECHAAAAAA");
                 this.racket.rotatingLeft = false;
                 this.racket.rotatingRight = true;
                 break;
         }
+
+
     }
 
     /**
