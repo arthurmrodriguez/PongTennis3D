@@ -67,10 +67,14 @@ export default class Racket extends THREE.Object3D {
      * It copies the body's position into the THREE mesh
      */
     updateMeshPosition(){
-        if(this.movingForward)
-            this.mesh.position.z += this.stepSize;
-        if(this.movingBackwards)
-            this.mesh.position.z -= this.stepSize;
+        if(this.movingForward){
+            if((!this.opposite && !(this.mesh.position.z + this.stepSize > -1)) || this.opposite)
+                this.mesh.position.z += this.stepSize;
+        }
+        if(this.movingBackwards){
+            if((this.opposite && !(this.mesh.position.z - this.stepSize < 1)) || !this.opposite)
+                this.mesh.position.z -= this.stepSize;
+        }
         if(this.movingLeft)
             this.mesh.position.x += this.stepSize;
         if(this.movingRight)

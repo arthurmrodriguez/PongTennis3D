@@ -6,7 +6,7 @@ export default {
         "color1" : '#e91e63',
         "color2" : '#2196f3',
         "mass" : 0,
-        "restitution" : 1.01,
+        "restitution" : 1.1,
         "stepSize" : 8,
         "rotationStep" : 0.2,
         "maxRotation" : 0.1
@@ -17,7 +17,7 @@ export default {
         "depth" : 1800,
         "color" : '#6dc066',
         "mass" : 0,
-        "restitution" : 0.99
+        "restitution" : 0.9
     },
     "net" : {
         "height" : 40,
