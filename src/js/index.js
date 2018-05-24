@@ -4,14 +4,15 @@ import $ from 'jquery';
 import Scene from './Scene';
 import Player from './Player';
 import Config from './Config';
+import Camera from './Camera';
 import './CannonDebugRenderer';
 
 // Main variables
 var scene, renderer, debugRenderer;
 
 // Two players, two cameras. Trackball Controls to walk around the scene
-var playerOneCamera, playerOneControls;
-var playerTwoCamera, playerTwoControls;
+var playerOneCamera;
+var playerTwoCamera;
 
 // Methods to run on load
 init();
@@ -33,22 +34,11 @@ function createRenderer(){
 }
 
 /**
- * Method to generate the two cameras
+ * Method to generate the two cameras, depending on the player position
  */
 function createCameras(){
-    // Player one - camera
-    playerOneCamera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 10000);
-    playerOneCamera.position.y = Config.court.depth;
-    playerOneCamera.position.z = 3*Config.court.depth/2;
-    playerOneCamera.lookAt(new THREE.Vector3(0, 0, 0));
-    playerOneControls = new TrackballControls(playerOneCamera, renderer);
-
-    // Player two - camera
-    playerTwoCamera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 10000);
-    playerTwoCamera.position.y = Config.court.depth;
-    playerTwoCamera.position.z = -(3*Config.court.depth/2);
-    playerTwoCamera.lookAt(new THREE.Vector3(0, 0, 0));
-    playerTwoControls = new TrackballControls(playerTwoCamera, renderer);
+    playerOneCamera = new Camera();
+    playerTwoCamera = new Camera(true);
 }
 
 /**
@@ -108,17 +98,14 @@ function updateCameras(){
     playerOneCamera.aspect = width / height;
     playerOneCamera.updateProjectionMatrix();
     renderer.render(scene, playerOneCamera);
-    playerOneControls.update();
-    //console.log('CAMERA 1: ' + playerOneCamera.position.x + playerOneCamera.position.y + playerOneCamera.position.z);
 
     left = 1; bottom = 1; width = 0.5 * window.innerWidth - 2; height = window.innerHeight - 2;
     renderer.setViewport(left, bottom, width, height);
     renderer.setScissor(left, bottom, width, height);
     renderer.setScissorTest(true);
     playerTwoCamera.aspect = width / height;
-    renderer.render(scene, playerTwoCamera);
     playerTwoCamera.updateProjectionMatrix();
-    playerTwoControls.update();
+    renderer.render(scene, playerTwoCamera);
 }
 
 /**
@@ -152,6 +139,14 @@ function linkHTMLDependencies() {
     var link = document.createElement('link');
     link.rel = 'stylesheet';
     link.href = 'https://fonts.googleapis.com/css?family=East+Sea+Dokdo';
+    head.appendChild(link);
+
+    // Links to external icons
+    link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = 'https://use.fontawesome.com/releases/v5.0.13/css/all.css';
+    link.integrity = 'sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp';
+    link.crossOrigin = 'anonymous';
     head.appendChild(link);
 }
 
@@ -190,12 +185,12 @@ function createUIElements() {
     player1helper.style.left = '0';
     player1helper.style.width = '20%';
     player1helper.style.height = '7%';
-    player1helper.style.borderBottom = '4px solid blue';
     player1helper.style.borderBottomRightRadius = '45%';
+    player1helper.style.borderBottom = '3px solid ' + Config.racket.color1;
     player1helper.style.textAlign = 'center';
     player1helper.style.fontSize = '36px';
     player1helper.style.fontFamily = 'East Sea Dokdo, cursive';
-    player1helper.style.backgroundColor = 'rgba(20, 20, 20, 0.8)';
+    player1helper.style.backgroundColor = 'rgba(20, 20, 20, 0.5)';
     var player1helperText = document.createTextNode('W,A,S,D');
     player1helper.appendChild(player1helperText);
     document.body.appendChild(player1helper);
@@ -208,15 +203,19 @@ function createUIElements() {
     player2helper.style.right = '0';
     player2helper.style.width = '20%';
     player2helper.style.height = '7%';
-    player2helper.style.borderBottom = '4px solid yellow';
     player2helper.style.borderBottomLeftRadius = '45%';
+    player2helper.style.borderBottom = '3px solid ' + Config.racket.color2;
     player2helper.style.textAlign = 'center';
     player2helper.style.fontSize = '36px';
     player2helper.style.fontFamily = 'East Sea Dokdo, cursive';
-    player2helper.style.backgroundColor = 'rgba(20, 20, 20, 0.8)';
+    player2helper.style.backgroundColor = 'rgba(20, 20, 20, 0.5)';
     var player2helperText = document.createTextNode('Arrow keys');
     player2helper.appendChild(player2helperText);
     document.body.appendChild(player2helper);
+}
+
+function createPlayerHelper(){
+
 }
 
 // When ready, load these things

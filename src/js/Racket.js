@@ -35,6 +35,7 @@ export default class Racket extends THREE.Object3D {
         else
             this.mesh.applyMatrix(new THREE.Matrix4().makeRotationX(-0.1));
         this.mesh.applyMatrix(new THREE.Matrix4().makeTranslation(0,this.height/2,0));
+        this.mesh.castShadow = true;
         this.mesh.receiveShadow = true;
         this.add(this.mesh);
 
