@@ -14,6 +14,11 @@ export default class SpotLight extends THREE.Light{
         this.light = new THREE.SpotLight(Config.scenario.spotLight.color);
         this.light.intensity = Config.scenario.spotLight.intensity;
 
+        // Parameters for casting shadows on the meshes
+        this.light.shadow.camera.near = 100;
+        this.light.shadow.camera.far = 4000;
+        this.light.shadow.camera.fov = 30;
+
         // Parameters for positioning
         this.light.position.x = Config.scenario.spotLight.position.x;
         this.light.position.y = Config.scenario.spotLight.position.y;
