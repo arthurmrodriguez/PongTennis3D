@@ -268,8 +268,8 @@ export default class Scene extends THREE.Scene {
      */
     updateScore(){
         var textoP1, textoP2;
-        textoP1 = (this.playerOne.currentPoints === 40 && this.playerOne.advantage >= 1) ? 'A' : this.playerOne.currentPoints;
-        textoP2 = (this.playerTwo.currentPoints === 40 && this.playerTwo.advantage >= 1) ? 'A' : this.playerTwo.currentPoints;
+        textoP1 = (this.playerOne.currentPoints === 40 && this.playerOne.advantage>this.playerTwo.advantage) ? 'A' : this.playerOne.currentPoints;
+        textoP2 = (this.playerTwo.currentPoints === 40 && this.playerTwo.advantage>this.playerOne.advantage) ? 'A' : this.playerTwo.currentPoints;
         document.getElementById('scoreboard').innerText = (textoP1 + ' - ' + textoP2);
     }
 
