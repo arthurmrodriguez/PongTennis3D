@@ -105,7 +105,7 @@ export default class Player extends THREE.Object3D{
             case this.controls.rotationRight:
                 this.racket.rotatingLeft = false;
                 this.racket.rotatingRight = false;
-                break;a
+                break;
         }
     }
 
@@ -124,6 +124,7 @@ export default class Player extends THREE.Object3D{
      */
     setPosition(x, y, z){
         this.racket.setPosition(x, y, z);
+        this.racket.mesh.rotation.y = 0;
     }
 
     /**
