@@ -205,7 +205,7 @@ function createUIElements() {
     // Create scoreboard for Sets - Games of each player
     // Create scoreboard
     var scoreboardPlayer1 = document.createElement('div');
-    scoreboard.setAttribute('id', 'scoreboardPlayer1');
+    scoreboardPlayer1.setAttribute('id', 'scoreboardPlayer1');
     scoreboardPlayer1.style.color = 'white';
     scoreboardPlayer1.style.position = 'absolute';
     scoreboardPlayer1.style.left = '24%';
@@ -222,7 +222,7 @@ function createUIElements() {
     document.body.appendChild(scoreboardPlayer1);
 
     var scoreboardPlayer2 = document.createElement('div');
-    scoreboard.setAttribute('id', 'scoreboardPlayer2');
+    scoreboardPlayer2.setAttribute('id', 'scoreboardPlayer2');
     scoreboardPlayer2.style.color = 'white';
     scoreboardPlayer2.style.position = 'absolute';
     scoreboardPlayer2.style.right = '24%';
