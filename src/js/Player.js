@@ -9,6 +9,13 @@ import Config from './Config';
  */
 export default class Player extends THREE.Object3D{
 
+    /**
+     * Class constructor with parameters
+     * @param {string} name 
+     * @param {THREE.Color} color 
+     * @param {boolean} opposite 
+     * @param {dictionary} keys 
+     */
     constructor(name = "Anonymous", color, opposite, keys){
         super();
         // Member data
@@ -18,11 +25,14 @@ export default class Player extends THREE.Object3D{
         this.controls = null;
         this.setControls(keys)
         this.racket = new Racket(this.color, this.opposite);
+        this.add(this.racket);
+
+        // Parameters updated during the development of the game
         this.currentPoints = 0;
+        this.currentGames = 0;
         this.currentSets = 0;
         this.serving = false;
         this.advantage = false;
-        this.add(this.racket);
     }
 
     /**
@@ -75,8 +85,6 @@ export default class Player extends THREE.Object3D{
                 this.racket.rotatingRight = true;
                 break;
         }
-
-
     }
 
     /**
@@ -110,14 +118,14 @@ export default class Player extends THREE.Object3D{
     }
 
     /**
-     *
+     * Updates the racket position and its relative body
      */
     updateMeshPosition(){
         this.racket.updateMeshPosition();
     }
 
     /**
-     * 
+     * Used for placing the player's racket in a specific position (maybe when a point ends)
      * @param {int} x 
      * @param {int} y 
      * @param {int} z 
@@ -135,8 +143,10 @@ export default class Player extends THREE.Object3D{
         this.advantage += advantage;
     }
 
-    incrementScore(){
-
+    /**
+     * Called when the player scores a point
+     */
+    incrementPoints(){
         // When already has 40 points and scores again
         // gets an advantage
         if(this.currentPoints == 40)
@@ -151,44 +161,54 @@ export default class Player extends THREE.Object3D{
             this.currentPoints = 40;
     }
 
-    incrementSets(){
-        this.currentSets+=1;
+    /**
+     * Called when the player scores a game
+     */
+    incrementGames(){
+        this.currentGames += 1;
         this.resetCurrentPoints();
     }
 
+    /**
+     * Called when the player scores a set
+     */
+    incrementSets(){
 
+    }
+
+    /**
+     * When a game is ended, points equal to 0
+     */
     resetCurrentPoints(){
         this.currentPoints = 0;
         this.advantage = 0;
     }
 
-    resetCurrentSets(){
-        this.currentSets = 0;
-
+    /**
+     * When a set is ended, games equal to 0
+     */
+    resetCurrentGames(){
+        this.currentGames = 0;
     }
 
-
     /**
-     *
+     * Used for abstraction with the racket object
      */
     getMesh(){
         return this.racket.mesh;
     }
 
     /**
-     *
+     * Used for abstraction with the racket object
      */
     getBody(){
         return this.racket.body;
     }
 
     /**
-     *
+     * Used for abstraction with the racket object
      */
     getContactMaterial(){
         return this.racket.contactMaterial;
     }
-
-
-
 }
