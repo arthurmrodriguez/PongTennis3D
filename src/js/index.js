@@ -56,6 +56,7 @@ function init(){
 
     // Dispose scoreboard and keys helpers
     createUIElements();
+    scene.updateServingPlayer();
     
     // Views
     createCameras();
@@ -181,6 +182,32 @@ function createUIElements() {
     var player1helperText = document.createTextNode('W,A,S,D');
     player1helper.appendChild(player1helperText);
     document.body.appendChild(player1helper);
+
+    // Create serve indicators for both player
+    var player1indicator = document.createElement('div');
+    player1indicator.setAttribute('id','player1indicator');
+    player1indicator.style.color = 'white';
+    player1indicator.style.position = 'absolute';
+    player1indicator.style.left = '39.5%';
+    player1indicator.style.top = '5%';
+    player1indicator.style.width = '22px';
+    player1indicator.style.height = '22px';
+    player1indicator.style.borderRadius = '100%';
+    player1indicator.style.backgroundColor = 'rgba(20, 20, 20, 0.5)';
+    document.body.appendChild(player1indicator);
+
+    var player2indicator = document.createElement('div');
+    player2indicator.setAttribute('id','player2indicator');
+    player2indicator.style.color = 'white';
+    player2indicator.style.position = 'absolute';
+    player2indicator.style.right = '39.5%';
+    player2indicator.style.top = '5%';
+    player2indicator.style.width = '22px';
+    player2indicator.style.height = '22px';
+    player2indicator.style.borderRadius = '100%';
+    player2indicator.style.backgroundColor = 'rgba(20, 20, 20, 0.5)';
+    document.body.appendChild(player2indicator);
+
 
     // Player 2
     var player2helper = document.createElement('div');

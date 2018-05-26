@@ -270,6 +270,23 @@ export default class Scene extends THREE.Scene {
         textoP1 = (this.playerOne.currentPoints === 40 && this.playerOne.advantage>this.playerTwo.advantage) ? 'A' : this.playerOne.currentPoints;
         textoP2 = (this.playerTwo.currentPoints === 40 && this.playerTwo.advantage>this.playerOne.advantage) ? 'A' : this.playerTwo.currentPoints;
         document.getElementById('scoreboard').innerText = (textoP1 + ' - ' + textoP2);
+
+        this.updateServingPlayer();
+    }
+
+    /**
+     * Changes the color of the serving indicator
+     * HTML UI element of each player
+     */
+    updateServingPlayer(){
+
+        // Background color of the player indicator is set to yellow
+        // if he has to serve the ball
+        document.getElementById('player1indicator').style.backgroundColor =
+            this.lastPlayerCollided === Config.playerOne.playerOneLabel ? 'rgba(255, 255, 0, 0.5)' : 'rgba(20, 20, 20, 0.5)';
+
+        document.getElementById('player2indicator').style.backgroundColor =
+            this.lastPlayerCollided === Config.playerTwo.playerTwoLabel ? 'rgba(255, 255, 0, 0.5)' : 'rgba(20, 20, 20, 0.5)';
     }
 
     /**
