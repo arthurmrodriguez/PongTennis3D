@@ -173,7 +173,9 @@ export default class Player extends THREE.Object3D{
      * Called when the player scores a set
      */
     incrementSets(){
-
+        this.currentSets += 1;
+        this.currentGames = 0;
+        this.resetCurrentPoints();
     }
 
     /**

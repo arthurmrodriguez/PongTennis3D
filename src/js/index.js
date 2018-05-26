@@ -183,7 +183,63 @@ function createUIElements() {
     player1helper.appendChild(player1helperText);
     document.body.appendChild(player1helper);
 
-    // Create serve indicators for both player
+
+    // Player 2
+    var player2helper = document.createElement('div');
+    player2helper.setAttribute('id', 'player2helper');
+    player2helper.style.color = 'white';
+    player2helper.style.position = 'absolute';
+    player2helper.style.right = '0';
+    player2helper.style.width = '20%';
+    player2helper.style.height = '7%';
+    player2helper.style.borderBottomLeftRadius = '45%';
+    player2helper.style.borderBottom = '3px solid ' + Config.racket.color2;
+    player2helper.style.textAlign = 'center';
+    player2helper.style.fontSize = '36px';
+    player2helper.style.fontFamily = 'East Sea Dokdo, cursive';
+    player2helper.style.backgroundColor = 'rgba(20, 20, 20, 0.5)';
+    var player2helperText = document.createTextNode('Arrow keys');
+    player2helper.appendChild(player2helperText);
+    document.body.appendChild(player2helper);
+
+    // Create scoreboard for Sets - Games of each player
+    // Create scoreboard
+    var scoreboardPlayer1 = document.createElement('div');
+    scoreboard.setAttribute('id', 'scoreboardPlayer1');
+    scoreboardPlayer1.style.color = 'white';
+    scoreboardPlayer1.style.position = 'absolute';
+    scoreboardPlayer1.style.left = '24%';
+    scoreboardPlayer1.style.width = '10%';
+    scoreboardPlayer1.style.height = '7%';
+    scoreboardPlayer1.style.borderBottomLeftRadius = '45%';
+    scoreboardPlayer1.style.borderBottomRightRadius = '45%';
+    scoreboardPlayer1.style.textAlign = 'center';
+    scoreboardPlayer1.style.fontSize = '35px';
+    scoreboardPlayer1.style.fontFamily = 'East Sea Dokdo, cursive';
+    scoreboardPlayer1.style.backgroundColor = 'rgba(20, 20, 20, 0.8)';
+    var textPlayer1 = document.createTextNode('0 - 0');
+    scoreboardPlayer1.appendChild(textPlayer1);
+    document.body.appendChild(scoreboardPlayer1);
+
+    var scoreboardPlayer2 = document.createElement('div');
+    scoreboard.setAttribute('id', 'scoreboardPlayer2');
+    scoreboardPlayer2.style.color = 'white';
+    scoreboardPlayer2.style.position = 'absolute';
+    scoreboardPlayer2.style.right = '24%';
+    scoreboardPlayer2.style.width = '10%';
+    scoreboardPlayer2.style.height = '7%';
+    scoreboardPlayer2.style.borderBottomLeftRadius = '45%';
+    scoreboardPlayer2.style.borderBottomRightRadius = '45%';
+    scoreboardPlayer2.style.textAlign = 'center';
+    scoreboardPlayer2.style.fontSize = '35px';
+    scoreboardPlayer2.style.fontFamily = 'East Sea Dokdo, cursive';
+    scoreboardPlayer2.style.backgroundColor = 'rgba(20, 20, 20, 0.8)';
+    var textPlayer2 = document.createTextNode('0 - 0');
+    scoreboardPlayer2.appendChild(textPlayer2);
+    document.body.appendChild(scoreboardPlayer2);
+
+
+    // Create serve indicators for both players
     var player1indicator = document.createElement('div');
     player1indicator.setAttribute('id','player1indicator');
     player1indicator.style.color = 'white';
@@ -209,23 +265,6 @@ function createUIElements() {
     document.body.appendChild(player2indicator);
 
 
-    // Player 2
-    var player2helper = document.createElement('div');
-    player2helper.setAttribute('id', 'player2helper');
-    player2helper.style.color = 'white';
-    player2helper.style.position = 'absolute';
-    player2helper.style.right = '0';
-    player2helper.style.width = '20%';
-    player2helper.style.height = '7%';
-    player2helper.style.borderBottomLeftRadius = '45%';
-    player2helper.style.borderBottom = '3px solid ' + Config.racket.color2;
-    player2helper.style.textAlign = 'center';
-    player2helper.style.fontSize = '36px';
-    player2helper.style.fontFamily = 'East Sea Dokdo, cursive';
-    player2helper.style.backgroundColor = 'rgba(20, 20, 20, 0.5)';
-    var player2helperText = document.createTextNode('Arrow keys');
-    player2helper.appendChild(player2helperText);
-    document.body.appendChild(player2helper);
 }
 
 // When ready, load these things

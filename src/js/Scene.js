@@ -79,6 +79,8 @@ export default class Scene extends THREE.Scene {
         this.lastPlayerCollided === Config.playerOne.playerOneLabel ?
             this.playerOne.serving = true : this.playerTwo.serving = true;
 
+        this.setsForMatch = 1;
+
         // Collisions work correctly without contact materials, but there aren't any bounces.
         // Contact material between the ball and the ground
         this.ballGroundMaterial = new CANNON.ContactMaterial(
@@ -146,6 +148,7 @@ export default class Scene extends THREE.Scene {
                         self.lastHalfOfCourtCollided = Config.playerOne.playerOneLabel;
                     this.numBounces++;
                     self.checkGameState();
+                    self.checkSetState();
                     break;
                 case Config.bodyIDs.netID:
                     break;
@@ -198,6 +201,19 @@ export default class Scene extends THREE.Scene {
      * It checks the score from 0 to 6+ games in a single set
      */
     checkSetState(){
+
+        // Check whether player one or two has scored the current set
+        if(this.playerOne.currentGames >= 6 && (this.playerOne.currentGames - this.playerTwo.currentGames) >= 2){
+            this.playerOne.incrementSets();
+            this.playerTwo.resetCurrentGames();
+            this.playerTwo.resetCurrentPoints();
+        }
+
+        if(this.playerTwo.currentGames >= 6 && (this.playerTwo.currentGames - this.playerOne.currentGames) >= 2){
+            this.playerTwo.incrementSets();
+            this.playerOne.resetCurrentGames();
+            this.playerOne.resetCurrentPoints();
+        }
 
     }
 
@@ -252,6 +268,7 @@ export default class Scene extends THREE.Scene {
 
         // Update the score on GUI
         this.updateScore();
+
         // Now it's time to serve, so the ball will remain
         // still until the serving player serves
         this.served = false;
@@ -266,10 +283,16 @@ export default class Scene extends THREE.Scene {
      * Writes the current score to the HTML UI
      */
     updateScore(){
+
+        // Text for current game status
         var textoP1, textoP2;
         textoP1 = (this.playerOne.currentPoints === 40 && this.playerOne.advantage>this.playerTwo.advantage) ? 'A' : this.playerOne.currentPoints;
         textoP2 = (this.playerTwo.currentPoints === 40 && this.playerTwo.advantage>this.playerOne.advantage) ? 'A' : this.playerTwo.currentPoints;
         document.getElementById('scoreboard').innerText = (textoP1 + ' - ' + textoP2);
+
+        // Text for each player's global Sets-Games status
+        document.getElementById('scoreboardPlayer1').innerText = (this.playerOne.currentSets + ' - ' + this.playerOne.currentGames);
+        document.getElementById('scoreboardPlayer2').innerText = (this.playerTwo.currentSets + ' - ' + this.playerTwo.currentGames);
 
         this.updateServingPlayer();
     }
