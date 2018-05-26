@@ -1,3 +1,7 @@
+/**
+ * This file is a type of JavaScript class in a JSON format.
+ * It's used in the whole project for using the same defined constants.
+ */
 export default {
     "racket" : {
         "width" : 140,
@@ -55,7 +59,7 @@ export default {
             "decay" : 1,
             "position" : {
                 "x" : 0,
-                "y" : 550,
+                "y" : 800,
                 "z" : 0
             }
         },

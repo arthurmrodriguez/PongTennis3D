@@ -4,8 +4,7 @@ import Config from './Config';
 export default class SpotLight extends THREE.Light{
 
     /**
-     * Class constructor
-     * @param {THREE.Color} color 
+     * Class constructor without parameters. The position and light parameters are defined in the Config.js
      */
     constructor(){
         super();

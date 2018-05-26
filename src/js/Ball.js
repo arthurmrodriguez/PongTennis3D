@@ -56,6 +56,12 @@ export default class Ball extends THREE.Object3D {
         this.body.position.z = z;
     }
 
+    /**
+     * Receives a vector representing the velocity that should be taken by the ball
+     * @param {int} x 
+     * @param {int} y 
+     * @param {int} z 
+     */
     setVelocity(x = 0, y = 0, z = 0) {
         this.body.velocity.x = x;
         this.body.velocity.y = y;

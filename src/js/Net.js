@@ -5,6 +5,9 @@ import tennisNet from '../img/tennisNet.jpg';
 
 export default class Net extends THREE.Object3D {
 
+    /**
+     * Class constructor without parameters. Every parameter is defined by the Config.js
+     */
     constructor() {
         super();
 
@@ -42,8 +45,10 @@ export default class Net extends THREE.Object3D {
         Config.bodyIDs.netID = this.body.id;
     }
 
+    /**
+     * Copy coordinates from Cannon.js world to Three.js'
+     */
     updateMeshPosition() {
-        // Copy coordinates from Cannon.js world to Three.js'
         this.mesh.position.copy(this.body.position);
         this.mesh.quaternion.copy(this.body.quaternion);
     }

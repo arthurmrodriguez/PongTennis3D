@@ -4,6 +4,11 @@ import Config from './Config';
 
 export default class Racket extends THREE.Object3D {
 
+    /**
+     * Class constructor with parameters
+     * @param {THREE.Color} color 
+     * @param {boolean} opposite 
+     */
     constructor(color,opposite) {
         super();
 
@@ -62,7 +67,6 @@ export default class Racket extends THREE.Object3D {
         this.mesh.position.z = z;
     }
 
-
     /**
      * It copies the body's position into the THREE mesh
      */
@@ -95,6 +99,4 @@ export default class Racket extends THREE.Object3D {
         this.body.position.z = this.opposite ? this.body.position.z + (this.depth*5) :
             this.body.position.z - (this.depth*5);
     }
-
-
 }

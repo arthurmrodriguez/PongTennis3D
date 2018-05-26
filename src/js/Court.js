@@ -6,6 +6,9 @@ import tennisCourt from '../img/tennisCourt.png';
 
 export default class Court extends THREE.Object3D {
 
+    /**
+     * Class constructor without parameters. Every parameter is defined by the Config.js
+     */
     constructor(){
         super();
 
@@ -34,18 +37,19 @@ export default class Court extends THREE.Object3D {
             material: this.contactMaterial
         });
         this.body.addShape(this.racketShape);
-
         Config.bodyIDs.courtID = this.body.id;
 
         this.net = new Net();
         this.net.body.position.y += this.net.height/2;
+        this.net.updateMeshPosition();
         this.add(this.net);
     }
 
+    /**
+     * Copy coordinates from Cannon.js world to Three.js'
+     */
     updateMeshPosition(){
-        // Copy coordinates from Cannon.js world to Three.js'
         this.mesh.position.copy(this.body.position);
         this.mesh.quaternion.copy(this.body.quaternion);
-        this.net.updateMeshPosition();
     }
 }

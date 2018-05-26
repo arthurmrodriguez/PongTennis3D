@@ -5,7 +5,6 @@ import Scene from './Scene';
 import Player from './Player';
 import Config from './Config';
 import Camera from './Camera';
-import './CannonDebugRenderer';
 
 // Main variables
 var scene, renderer, debugRenderer;
@@ -14,8 +13,10 @@ var scene, renderer, debugRenderer;
 var playerOneCamera, playerOneControls;
 var playerTwoCamera, playerTwoControls;
 
-// Methods to run on load
+//// Methods to run on load
+// Init world, players, parameters and all that stuff
 init();
+// Animation method, always run
 animate();
 
 /**
@@ -64,31 +65,21 @@ function init(){
 }
 
 /**
- * 
+ * Reiterative call. It displays and updates everything on the browser
  */
 function animate(){
     // Load this method in every frame
     requestAnimationFrame(animate);
 
     // Update physics world, stepping CANNON world and waiting for collisions
-    updateMeshPosition();
-    
-    // If necessary, we can preview the CANNON meshes
-    //debugRenderer.update();
-
-    // Infinite loop
-    render();
-}
-
-/**
- * 
- */
-function updateMeshPosition(){
     scene.updateMeshPosition();
+
+    // Reload cameras and points of view
+    updateCameras();
 }
 
 /**
- * 
+ * Needed to display two different cameras with a single renderer
  */
 function updateCameras(){
     var left, bottom, width, height;
@@ -113,29 +104,21 @@ function updateCameras(){
 }
 
 /**
- * 
- */
-function render() {
-    // Update the camera position and its trackball controls
-    updateCameras();
-}
-
-/**
- * 
+ * Event triggered when a key starts being pressed
  */
 function computeKeyDown(event) {
     scene.computeKeyDown(event);
 }
 
 /**
- * 
+ * Event triggered when a key stops being pressed
  */
 function computeKeyUp(event) {
     scene.computeKeyUp(event);
 }
 
 /**
- * 
+ * It's used to link with external dependencies, such as fonts, icons, etc.
  */
 function linkHTMLDependencies() {
     // Links to external font
@@ -155,7 +138,7 @@ function linkHTMLDependencies() {
 }
 
 /**
- * 
+ * It draws HTML elements on the screen to inform about the score and the controls for each player
  */
 function createUIElements() {
     // Link needed external dependencies (fonts, etc.)
@@ -216,10 +199,6 @@ function createUIElements() {
     var player2helperText = document.createTextNode('Arrow keys');
     player2helper.appendChild(player2helperText);
     document.body.appendChild(player2helper);
-}
-
-function createPlayerHelper(){
-
 }
 
 // When ready, load these things

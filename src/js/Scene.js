@@ -10,7 +10,7 @@ import Player from "./Player";
 export default class Scene extends THREE.Scene {
 
     /**
-     * 
+     * Class constructor without parameters. Every parameter is defined in the Config.js
      */
     constructor(){
         super();
@@ -23,10 +23,11 @@ export default class Scene extends THREE.Scene {
         this.ambientLight = null;
         this.spotLights = null;
 
+        // CANNON world parameters
         this.restitution = Config.scenario.physics.bounceRestitution;
         this.gravity = Config.scenario.physics.gravity;
 
-        // Time of step in CANNON's world. Equal to a maximum of 60 FPS
+        // Time of step in CANNON's world
         this.timeStep = 1 / 30;
 
         // Init cannon world
@@ -115,10 +116,7 @@ export default class Scene extends THREE.Scene {
          * Listener owned by the ball's body in order to detect collisions and handle scoring.
          * As the listener is owned by the body, inside of the this.handleCollision method, this
          * isn't translated by the Scene class; it's translated by "ball.body".
-         */
-
-
-        /**
+         * 
          * This method checks every collision with every body on the world.
          * It always has to check if a point has been scored by any player.
          *
@@ -137,7 +135,6 @@ export default class Scene extends THREE.Scene {
          */
         var self = this;
         this.ball.body.addEventListener("collide", function(collision){
-
             // Every time the ball collides with a racket, the numBounces of
             // the ball is set to 0. When the ball goes out of the court, numBounces
             // is incremented in 1 (this is done inside Ball's object)
@@ -148,7 +145,7 @@ export default class Scene extends THREE.Scene {
                     else //this.body.position.z < 0
                         self.lastHalfOfCourtCollided = Config.playerOne.playerOneLabel;
                     this.numBounces++;
-                    self.checkSetState();
+                    self.checkGameState();
                     break;
                 case Config.bodyIDs.netID:
                     break;
@@ -178,9 +175,9 @@ export default class Scene extends THREE.Scene {
     }
 
     /**
-     * 
+     * It checks the score from 0 to 40+ points in a single game
      */
-    checkSetState(){
+    checkGameState(){
         // This first condition covers the aforementioned conditions 2 and 3,
         // that is, when the ball is hit by P1 and either bounces inside P1 court or
         // goes out of the court
@@ -193,11 +190,16 @@ export default class Scene extends THREE.Scene {
         }
         // If it reaches a count of more than 2 bounces, the last player who
         // hit the ball is the winner
-        else if(this.ball.body.numBounces >= 2){
+        else if(this.ball.body.numBounces >= 2)
             this.endedPlay(this.lastPlayerCollided);
-        }
     }
 
+    /**
+     * It checks the score from 0 to 6+ games in a single set
+     */
+    checkSetState(){
+
+    }
 
     /**
      * This method is called when a play ends.
@@ -205,13 +207,12 @@ export default class Scene extends THREE.Scene {
      * @param winner Player ID who has won the current play.
      */
     endedPlay(winner){
-
         // Update of the values
         this.lastPlayerCollided = winner;
 
         // Update score locally to each player
-        this.lastPlayerCollided === Config.playerOne.playerOneLabel ? this.playerOne.incrementScore() :
-            this.playerTwo.incrementScore();
+        this.lastPlayerCollided === Config.playerOne.playerOneLabel ? this.playerOne.incrementPoints() :
+            this.playerTwo.incrementPoints();
 
         // After score update, we check if there's a deuce: both players with
         // 40 points and no one with advantage
@@ -226,11 +227,11 @@ export default class Scene extends THREE.Scene {
             // Check if somebody has got advantage of more two points
             if(Math.abs(this.playerOne.advantage - this.playerTwo.advantage) === 2) {
                 if (this.playerOne.advantage > this.playerTwo.advantage) {
-                    this.playerOne.incrementSets();
+                    this.playerOne.incrementGames();
                     this.playerTwo.resetCurrentPoints();
                 }
                 else {
-                    this.playerTwo.incrementSets();
+                    this.playerTwo.incrementGames();
                     this.playerOne.resetCurrentPoints();
                 }
             }
@@ -240,11 +241,11 @@ export default class Scene extends THREE.Scene {
         // which is 40 points and a advantage
         else {
             if(this.playerOne.currentPoints === 40 && this.playerOne.advantage >= 1) {
-                this.playerOne.incrementSets();
+                this.playerOne.incrementGames();
                 this.playerTwo.resetCurrentPoints();
             }
             else if(this.playerTwo.currentPoints === 40 && this.playerTwo.advantage >= 1) {
-                this.playerTwo.incrementSets();
+                this.playerTwo.incrementGames();
                 this.playerOne.resetCurrentPoints();
             }
         }
@@ -262,7 +263,7 @@ export default class Scene extends THREE.Scene {
     }
 
     /**
-     * 
+     * Writes the current score to the HTML UI
      */
     updateScore(){
         var textoP1, textoP2;
@@ -272,7 +273,7 @@ export default class Scene extends THREE.Scene {
     }
 
     /**
-     * 
+     * Places the racket in the center of their half of the court again
      */
     resetRacketsPosition(){
         this.playerOne.setPosition(0, this.playerOne.racket.height, -this.court.depth / 4);
@@ -280,7 +281,7 @@ export default class Scene extends THREE.Scene {
     }
 
     /**
-     *
+     * It updates every meshes' and bodies' position in the scene
      */
     updateMeshPosition() {
         // Step the physics world
@@ -292,11 +293,10 @@ export default class Scene extends THREE.Scene {
 
         if(this.ball.body.position.y <= -50) {
             this.ball.body.numBounces++;
-            this.checkSetState();
+            this.checkGameState();
         }
 
         if(!this.served){
-
             if(this.ball.body.mass != 0){
                 // The ball animation needs to be stopped inside the
                 // animation loop for it not to maintain old values and
@@ -322,22 +322,19 @@ export default class Scene extends THREE.Scene {
 
             this.ball.setPosition(servingPlayer.getMesh().position.x, Config.ball.bounceHeight, -Config.ball.initialZPos*token);
             this.ball.updateMeshPosition();
-
         }
     }
 
     /**
-     * 
+     * Event triggered when a key starts being pressed
      */
     computeKeyDown(event){
-
         this.playerOne.computeKeyDown(event);
         this.playerTwo.computeKeyDown(event);
 
         // After checking key events, we check
         // whether the serving player has served
         if(!this.served){
-
             if(this.lastPlayerCollided === Config.playerOne.playerOneLabel &&
                 !this.playerOne.serving)
                 this.served = true;
@@ -355,7 +352,6 @@ export default class Scene extends THREE.Scene {
             // If the player has served, animation is reset by giving
             // velocity and mass to the ball
             if(this.served){
-
                 this.ball.body.numBounces = 0;
                 this.ball.setPosition(servingPlayer.getMesh().position.x, Config.ball.bounceHeight, -Config.ball.initialZPos*token);
 
@@ -369,12 +365,11 @@ export default class Scene extends THREE.Scene {
                 this.ball.body.velocity.set(Config.ball.velocity*token*direction.x,0,Config.ball.velocity*token*direction.z);
                 this.ball.body.mass = Config.ball.mass;
             }
-
         }
     }
 
     /**
-     * 
+     * Event triggered when a key stops being pressed
      */
     computeKeyUp(event){
         this.playerOne.computeKeyUp(event);
