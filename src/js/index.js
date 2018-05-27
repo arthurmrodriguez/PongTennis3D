@@ -13,6 +13,9 @@ var scene, renderer, debugRenderer;
 var playerOneCamera, playerOneControls;
 var playerTwoCamera, playerTwoControls;
 
+// It helps with the pause/end of the game
+var pausedGame = false;
+
 //// Methods to run on load
 // Init world, players, parameters and all that stuff
 init();
@@ -51,12 +54,8 @@ function init(){
     // The scene with the court, players & stuff
     scene = new Scene();
 
-    // If necessary, we can preview the CANNON meshes
-    //debugRenderer = new THREE.CannonDebugRenderer(scene, scene.world);
-
     // Dispose scoreboard and keys helpers
-    createUIElements();
-    scene.updateServingPlayer();
+    initializeGameParameters();
     
     // Views
     createCameras();
@@ -72,11 +71,13 @@ function animate(){
     // Load this method in every frame
     requestAnimationFrame(animate);
 
-    // Update physics world, stepping CANNON world and waiting for collisions
-    scene.updateMeshPosition();
+    if (!pausedGame){
+        // Update physics world, stepping CANNON world and waiting for collisions
+        scene.updateMeshPosition();
 
-    // Reload cameras and points of view
-    updateCameras();
+        // Reload cameras and points of view
+        updateCameras();
+    }
 }
 
 /**
@@ -108,14 +109,18 @@ function updateCameras(){
  * Event triggered when a key starts being pressed
  */
 function computeKeyDown(event) {
-    scene.computeKeyDown(event);
+    if(event.code === "Space")
+        pausedGame = !pausedGame;
+    else if(!pausedGame)
+        scene.computeKeyDown(event);
 }
 
 /**
  * Event triggered when a key stops being pressed
  */
 function computeKeyUp(event) {
-    scene.computeKeyUp(event);
+    if(!pausedGame)
+        scene.computeKeyUp(event);
 }
 
 /**
@@ -139,12 +144,98 @@ function linkHTMLDependencies() {
 }
 
 /**
- * It draws HTML elements on the screen to inform about the score and the controls for each player
+ * It displays a container used to define the parameters of the game (such as games, sets, etc)
  */
-function createUIElements() {
+function initializeGameParameters() {
     // Link needed external dependencies (fonts, etc.)
     linkHTMLDependencies();
 
+    var matchOptions = document.createElement('div');
+    matchOptions.setAttribute('id', 'matchOptions');
+    matchOptions.style.width = '30vw';
+    matchOptions.style.height = '30vh';
+    matchOptions.style.marginLeft = '30vw';
+    matchOptions.style.marginTop = '25vh';
+    matchOptions.style.backgroundColor = '#404040';
+    matchOptions.style.boxShadow = '0px 0px 30px 5px rgba(48,48,48,1)';
+    matchOptions.style.fontFamily = 'sans-serif';
+    matchOptions.style.fontSize = '110%';
+    matchOptions.style.color = 'white';
+    matchOptions.style.position = 'absolute';
+    matchOptions.style.textAlign = 'center';
+    matchOptions.style.paddingTop = matchOptions.style.paddingBottom = '5vh';
+    matchOptions.style.paddingLeft = matchOptions.style.paddingRight = '5vw';
+
+    var gamesAndSetsForm = document.createElement('div');
+    gamesAndSetsForm.appendChild(document.createTextNode('Choose the number of games per set:'));
+    gamesAndSetsForm.appendChild(document.createElement('br'));
+    gamesAndSetsForm.appendChild(document.createElement('br'));
+    var radioGames1 = document.createElement('input');
+    radioGames1.setAttribute('type', 'radio');
+    radioGames1.setAttribute('name', 'games');
+    radioGames1.setAttribute('value', 'one');
+    radioGames1.checked = true;
+    gamesAndSetsForm.appendChild(document.createTextNode('1 '));
+    gamesAndSetsForm.appendChild(radioGames1);
+    gamesAndSetsForm.appendChild(document.createElement('br'));
+    var radioGames3 = document.createElement('input');
+    radioGames3.setAttribute('type', 'radio');
+    radioGames3.setAttribute('name', 'games');
+    radioGames3.setAttribute('value', 'three');
+    gamesAndSetsForm.appendChild(document.createTextNode('3 '));
+    gamesAndSetsForm.appendChild(radioGames3);
+    gamesAndSetsForm.appendChild(document.createElement('br'));
+    var radioGames5 = document.createElement('input');
+    radioGames5.setAttribute('type', 'radio');
+    radioGames5.setAttribute('name', 'games');
+    radioGames5.setAttribute('value', 'five');
+    gamesAndSetsForm.appendChild(document.createTextNode('5 '));
+    gamesAndSetsForm.appendChild(radioGames5);
+    gamesAndSetsForm.appendChild(document.createElement('br'));
+
+    gamesAndSetsForm.appendChild(document.createElement('br'));
+    gamesAndSetsForm.appendChild(document.createElement('br'));
+    gamesAndSetsForm.appendChild(document.createTextNode('Choose the number of sets per match:'));
+    gamesAndSetsForm.appendChild(document.createElement('br'));
+    gamesAndSetsForm.appendChild(document.createElement('br'));
+    var radioSets1 = document.createElement('input');
+    radioSets1.setAttribute('type', 'radio');
+    radioSets1.setAttribute('name', 'sets');
+    radioSets1.setAttribute('value', 'one');
+    radioSets1.checked = true;
+    gamesAndSetsForm.appendChild(document.createTextNode('1 '));
+    gamesAndSetsForm.appendChild(radioSets1);
+    gamesAndSetsForm.appendChild(document.createElement('br'));
+    var radioSets3 = document.createElement('input');
+    radioSets3.setAttribute('type', 'radio');
+    radioSets3.setAttribute('name', 'sets');
+    radioSets3.setAttribute('value', 'three');
+    gamesAndSetsForm.appendChild(document.createTextNode('3 '));
+    gamesAndSetsForm.appendChild(radioSets3);
+    gamesAndSetsForm.appendChild(document.createElement('br'));
+    var radioSets5 = document.createElement('input');
+    radioSets5.setAttribute('type', 'radio');
+    radioSets5.setAttribute('name', 'sets');
+    radioSets5.setAttribute('value', 'five');
+    gamesAndSetsForm.appendChild(document.createTextNode('5 '));
+    gamesAndSetsForm.appendChild(radioSets5);
+    gamesAndSetsForm.appendChild(document.createElement('br'));
+    gamesAndSetsForm.appendChild(document.createElement('br'));
+    var submitButton = document.createElement('button');
+    submitButton.onclick = function() { createUIElements(); };
+    gamesAndSetsForm.appendChild(submitButton);
+
+    matchOptions.appendChild(gamesAndSetsForm);
+    document.body.appendChild(matchOptions);
+}
+
+/**
+ * It draws HTML elements on the screen to inform about the score and the controls for each player
+ */
+function createUIElements() {
+    // Hide parameters chooser dialog
+    document.getElementById('matchOptions').style.display = 'none';
+    
     // Create scoreboard
     var scoreboard = document.createElement('div');
     scoreboard.setAttribute('id', 'scoreboard');
@@ -182,7 +273,6 @@ function createUIElements() {
     var player1helperText = document.createTextNode('W,A,S,D');
     player1helper.appendChild(player1helperText);
     document.body.appendChild(player1helper);
-
 
     // Player 2
     var player2helper = document.createElement('div');
@@ -238,7 +328,6 @@ function createUIElements() {
     scoreboardPlayer2.appendChild(textPlayer2);
     document.body.appendChild(scoreboardPlayer2);
 
-
     // Create serve indicators for both players
     var player1indicator = document.createElement('div');
     player1indicator.setAttribute('id','player1indicator');
@@ -264,7 +353,7 @@ function createUIElements() {
     player2indicator.style.backgroundColor = 'rgba(20, 20, 20, 0.5)';
     document.body.appendChild(player2indicator);
 
-
+    scene.updateServingPlayer();
 }
 
 // When ready, load these things
