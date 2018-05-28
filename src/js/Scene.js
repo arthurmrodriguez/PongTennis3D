@@ -72,14 +72,16 @@ export default class Scene extends THREE.Scene {
         Config.bodyIDs.player2ID = this.playerTwo.getBody().id;
         this.resetRacketsPosition();
 
-        // Player stuff -------- CHECK THIS
+        // Match status
+        this.pausedGame = true;
         this.lastPlayerCollided = this.lastHalfOfCourtCollided = Config.playerOne.playerOneLabel;
         this.deuce = false;
         this.served = false;
         this.lastPlayerCollided === Config.playerOne.playerOneLabel ?
             this.playerOne.serving = true : this.playerTwo.serving = true;
 
-        this.setsForMatch = 1;
+        this.gamesPerSet = 1;
+        this.setsPerMatch = 1;
 
         // Collisions work correctly without contact materials, but there aren't any bounces.
         // Contact material between the ball and the ground
@@ -148,7 +150,6 @@ export default class Scene extends THREE.Scene {
                         self.lastHalfOfCourtCollided = Config.playerOne.playerOneLabel;
                     this.numBounces++;
                     self.checkGameState();
-                    self.checkSetState();
                     break;
                 case Config.bodyIDs.netID:
                     break;
@@ -198,23 +199,53 @@ export default class Scene extends THREE.Scene {
     }
 
     /**
-     * It checks the score from 0 to 6+ games in a single set
+     * It checks the score from 0 to maximum of games in a single set
      */
     checkSetState(){
-
         // Check whether player one or two has scored the current set
-        if(this.playerOne.currentGames >= 6 && (this.playerOne.currentGames - this.playerTwo.currentGames) >= 2){
+        if(this.playerOne.currentGames >= this.gamesPerSet && (this.playerOne.currentGames - this.playerTwo.currentGames) >= 2){
             this.playerOne.incrementSets();
             this.playerTwo.resetCurrentGames();
             this.playerTwo.resetCurrentPoints();
         }
-
-        if(this.playerTwo.currentGames >= 6 && (this.playerTwo.currentGames - this.playerOne.currentGames) >= 2){
+        if(this.playerTwo.currentGames >= this.gamesPerSet && (this.playerTwo.currentGames - this.playerOne.currentGames) >= 2){
             this.playerTwo.incrementSets();
             this.playerOne.resetCurrentGames();
             this.playerOne.resetCurrentPoints();
         }
+        this.checkMatchState();
+    }
 
+    /**
+     * It checks the score from 0 to maximum of sets in a single match
+     */
+    checkMatchState(){
+        if (this.playerOne.currentSets >= this.setsPerMatch)
+            this.endedMatch(this.playerOne);
+        else if (this.playerTwo.currentSets >= this.setsPerMatch)
+            this.endedMatch(this.playerTwo);
+    }
+
+    /**
+     * Triggered when a player wins the game. It allows to play again
+     */
+    endedMatch(player){
+        var playerNumber;
+        if(player === this.playerOne)
+            playerNumber = '1';
+        else if (player === this.playerTwo)
+            playerNumber = '2';
+        this.pausedGame = true;
+
+        var endDiv = document.getElementById('endOfTheGameDiv');
+        endDiv.style.display = 'initial';
+        endDiv.innerText = 'The winner is the player ' + playerNumber + '!';
+        var reloadButton = document.createElement('button');
+        reloadButton.innerText = 'Play again';
+        reloadButton.onclick = function(){ window.location.reload(); };
+        endDiv.appendChild(document.createElement('br'));
+        endDiv.appendChild(document.createElement('br'));
+        endDiv.appendChild(reloadButton);
     }
 
     /**
@@ -265,6 +296,7 @@ export default class Scene extends THREE.Scene {
                 this.playerOne.resetCurrentPoints();
             }
         }
+        this.checkSetState();
 
         // Update the score on GUI
         this.updateScore();
@@ -288,11 +320,11 @@ export default class Scene extends THREE.Scene {
         var textoP1, textoP2;
         textoP1 = (this.playerOne.currentPoints === 40 && this.playerOne.advantage>this.playerTwo.advantage) ? 'A' : this.playerOne.currentPoints;
         textoP2 = (this.playerTwo.currentPoints === 40 && this.playerTwo.advantage>this.playerOne.advantage) ? 'A' : this.playerTwo.currentPoints;
-        document.getElementById('scoreboard').innerText = (textoP1 + ' - ' + textoP2);
-
+        
         // Text for each player's global Sets-Games status
-        document.getElementById('scoreboardPlayer1').innerText = (this.playerOne.currentSets + ' - ' + this.playerOne.currentGames);
-        document.getElementById('scoreboardPlayer2').innerText = (this.playerTwo.currentSets + ' - ' + this.playerTwo.currentGames);
+        document.getElementById('pointsText').innerText = (textoP1 + ' - ' + textoP2);
+        document.getElementById('gamesText').innerText = 'Games: ' + this.playerOne.currentGames + ' - ' + this.playerTwo.currentGames;
+        document.getElementById('setsText').innerText = 'Sets: ' + this.playerOne.currentSets + ' - ' + this.playerTwo.currentSets;
 
         this.updateServingPlayer();
     }

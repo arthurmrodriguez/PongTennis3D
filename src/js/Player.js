@@ -174,8 +174,7 @@ export default class Player extends THREE.Object3D{
      */
     incrementSets(){
         this.currentSets += 1;
-        this.currentGames = 0;
-        this.resetCurrentPoints();
+        this.resetCurrentGames();
     }
 
     /**
@@ -191,6 +190,7 @@ export default class Player extends THREE.Object3D{
      */
     resetCurrentGames(){
         this.currentGames = 0;
+        this.resetCurrentPoints();
     }
 
     /**
