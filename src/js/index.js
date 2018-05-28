@@ -56,6 +56,7 @@ function init(){
 
     // Dispose scoreboard and keys helpers
     initializeGameParameters();
+    scene.updateServingPlayer();
     
     // Views
     createCameras();
@@ -149,11 +150,12 @@ function linkHTMLDependencies() {
 function initializeGameParameters() {
     // Link needed external dependencies (fonts, etc.)
     linkHTMLDependencies();
+    createUIElements();
 
     var matchOptions = document.createElement('div');
     matchOptions.setAttribute('id', 'matchOptions');
     matchOptions.style.width = '30vw';
-    matchOptions.style.height = '30vh';
+    matchOptions.style.height = '50vh';
     matchOptions.style.marginLeft = '30vw';
     matchOptions.style.marginTop = '25vh';
     matchOptions.style.backgroundColor = '#404040';
@@ -222,7 +224,17 @@ function initializeGameParameters() {
     gamesAndSetsForm.appendChild(document.createElement('br'));
     gamesAndSetsForm.appendChild(document.createElement('br'));
     var submitButton = document.createElement('button');
-    submitButton.onclick = function() { createUIElements(); };
+    submitButton.onclick = function() {
+        // Hide parameters chooser dialog
+        document.getElementById('matchOptions').style.display = 'none';
+        document.getElementById('scoreboard').style.display = 'inherit';
+        document.getElementById('player1helper').style.display = 'inherit';
+        document.getElementById('player2helper').style.display = 'inherit';
+        document.getElementById('scoreboardPlayer1').style.display = 'inherit';
+        document.getElementById('scoreboardPlayer2').style.display = 'inherit';
+        document.getElementById('player1indicator').style.display = 'inherit';
+        document.getElementById('player2indicator').style.display = 'inherit';
+    };
     gamesAndSetsForm.appendChild(submitButton);
 
     matchOptions.appendChild(gamesAndSetsForm);
@@ -232,10 +244,7 @@ function initializeGameParameters() {
 /**
  * It draws HTML elements on the screen to inform about the score and the controls for each player
  */
-function createUIElements() {
-    // Hide parameters chooser dialog
-    document.getElementById('matchOptions').style.display = 'none';
-    
+function createUIElements() {    
     // Create scoreboard
     var scoreboard = document.createElement('div');
     scoreboard.setAttribute('id', 'scoreboard');
@@ -253,6 +262,7 @@ function createUIElements() {
     scoreboard.style.backgroundColor = 'rgba(20, 20, 20, 0.8)';
     var scoreText = document.createTextNode('0 - 0');
     scoreboard.appendChild(scoreText);
+    scoreboard.style.display = 'none';
     document.body.appendChild(scoreboard);
 
     // Create controls' helper
@@ -272,6 +282,7 @@ function createUIElements() {
     player1helper.style.backgroundColor = 'rgba(20, 20, 20, 0.5)';
     var player1helperText = document.createTextNode('W,A,S,D');
     player1helper.appendChild(player1helperText);
+    player1helper.style.display = 'none';
     document.body.appendChild(player1helper);
 
     // Player 2
@@ -290,6 +301,7 @@ function createUIElements() {
     player2helper.style.backgroundColor = 'rgba(20, 20, 20, 0.5)';
     var player2helperText = document.createTextNode('Arrow keys');
     player2helper.appendChild(player2helperText);
+    player2helper.style.display = 'none';
     document.body.appendChild(player2helper);
 
     // Create scoreboard for Sets - Games of each player
@@ -309,6 +321,7 @@ function createUIElements() {
     scoreboardPlayer1.style.backgroundColor = 'rgba(20, 20, 20, 0.8)';
     var textPlayer1 = document.createTextNode('0 - 0');
     scoreboardPlayer1.appendChild(textPlayer1);
+    scoreboardPlayer1.style.display = 'none';
     document.body.appendChild(scoreboardPlayer1);
 
     var scoreboardPlayer2 = document.createElement('div');
@@ -326,6 +339,7 @@ function createUIElements() {
     scoreboardPlayer2.style.backgroundColor = 'rgba(20, 20, 20, 0.8)';
     var textPlayer2 = document.createTextNode('0 - 0');
     scoreboardPlayer2.appendChild(textPlayer2);
+    scoreboardPlayer2.style.display = 'none';
     document.body.appendChild(scoreboardPlayer2);
 
     // Create serve indicators for both players
@@ -339,6 +353,7 @@ function createUIElements() {
     player1indicator.style.height = '22px';
     player1indicator.style.borderRadius = '100%';
     player1indicator.style.backgroundColor = 'rgba(20, 20, 20, 0.5)';
+    player1indicator.style.display = 'none';
     document.body.appendChild(player1indicator);
 
     var player2indicator = document.createElement('div');
@@ -351,9 +366,8 @@ function createUIElements() {
     player2indicator.style.height = '22px';
     player2indicator.style.borderRadius = '100%';
     player2indicator.style.backgroundColor = 'rgba(20, 20, 20, 0.5)';
+    player2indicator.style.display = 'none';
     document.body.appendChild(player2indicator);
-
-    scene.updateServingPlayer();
 }
 
 // When ready, load these things
