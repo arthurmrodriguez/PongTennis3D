@@ -5,8 +5,8 @@
 ## How to run the project?
 
 ```bash
-$ git clone __REPO__
-$ cd __REPO__
-$ npm install
-$ npm start 	# deploys the project
+$ git clone https://github.com/arthurmrodriguez/PongTennis3D
+$ cd PongTennis3D/
+$ npm install   # to install every Node.js dependencies
+$ npm start 	# starts a local server
 ```
