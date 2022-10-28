@@ -33,7 +33,7 @@
     "three-trackballcontrols": "0.0.7",
     "webpack": "^4.43.0",
     "webpack-cli": "^3.3.11",
-    "webpack-dev-server": "^3.11.0"
+    "webpack-dev-server": "^3.11.3"
   },
   "devDependencies": {
     "file-loader": "^1.1.11",
